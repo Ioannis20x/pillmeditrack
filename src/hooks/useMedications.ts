@@ -73,7 +73,7 @@ export function useMedications() {
   };
 
   const updateMedication = async (id: string, updates: Partial<Medication>) => {
-    const dbUpdates: Record<string, any> = {};
+    const dbUpdates: { notes?: string; name?: string; dosage?: string } = {};
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.dosage !== undefined) dbUpdates.dosage = updates.dosage;

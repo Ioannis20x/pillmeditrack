@@ -52,6 +52,10 @@ const Index = () => {
       </nav>
 
       <main className="max-w-4xl mx-auto px-6 md:px-12 py-8">
+        {loading ? (
+          <div className="flex justify-center py-20"><Loader2 className="size-8 animate-spin text-primary" /></div>
+        ) : (
+        <>
         {/* Hero */}
         <header className="mb-16">
           <h1 className="font-display text-5xl md:text-6xl italic leading-tight mb-3">

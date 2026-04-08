@@ -14,7 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      medication_taken: {
+        Row: {
+          id: string
+          medication_id: string
+          taken_at: string
+          taken_key: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          medication_id: string
+          taken_at?: string
+          taken_key: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          medication_id?: string
+          taken_at?: string
+          taken_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_taken_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medications: {
+        Row: {
+          created_at: string
+          dosage: string
+          id: string
+          interval_hours: number | null
+          name: string
+          notes: string | null
+          pill_color: string
+          pill_shape: string
+          schedule_type: string
+          times_of_day: string[] | null
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dosage?: string
+          id?: string
+          interval_hours?: number | null
+          name: string
+          notes?: string | null
+          pill_color?: string
+          pill_shape?: string
+          schedule_type?: string
+          times_of_day?: string[] | null
+          unit?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dosage?: string
+          id?: string
+          interval_hours?: number | null
+          name?: string
+          notes?: string | null
+          pill_color?: string
+          pill_shape?: string
+          schedule_type?: string
+          times_of_day?: string[] | null
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

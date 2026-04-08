@@ -5,6 +5,7 @@ import { TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
 import { useAuth } from '@/hooks/useAuth';
 import { Pill, LogOut, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { NotificationToggle } from '@/components/NotificationToggle';
 
 const Index = () => {
   const { medications, loading, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
@@ -45,6 +46,7 @@ const Index = () => {
         </div>
         <div className="flex items-center gap-2">
           <AddMedicationDialog onAdd={addMedication} />
+          <NotificationToggle />
           <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={signOut}>
             <LogOut className="size-4" />
           </Button>

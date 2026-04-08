@@ -2,10 +2,13 @@ import { useMedications } from '@/hooks/useMedications';
 import { MedicationCard } from '@/components/MedicationCard';
 import { AddMedicationDialog } from '@/components/AddMedicationDialog';
 import { TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
-import { Pill } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { Pill, LogOut, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  const { medications, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
+  const { medications, loading, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
+  const { signOut } = useAuth();
 
   const today = new Date().toISOString().split('T')[0];
   
@@ -40,10 +43,19 @@ const Index = () => {
           </div>
           <span className="text-xl font-body font-medium tracking-tight">MediTrack</span>
         </div>
-        <AddMedicationDialog onAdd={addMedication} />
+        <div className="flex items-center gap-2">
+          <AddMedicationDialog onAdd={addMedication} />
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={signOut}>
+            <LogOut className="size-4" />
+          </Button>
+        </div>
       </nav>
 
       <main className="max-w-4xl mx-auto px-6 md:px-12 py-8">
+        {loading ? (
+          <div className="flex justify-center py-20"><Loader2 className="size-8 animate-spin text-primary" /></div>
+        ) : (
+        <>
         {/* Hero */}
         <header className="mb-16">
           <h1 className="font-display text-5xl md:text-6xl italic leading-tight mb-3">
@@ -120,6 +132,8 @@ const Index = () => {
               </section>
             )}
           </div>
+        )}
+        </>
         )}
       </main>
     </div>

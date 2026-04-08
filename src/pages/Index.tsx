@@ -43,7 +43,12 @@ const Index = () => {
           </div>
           <span className="text-xl font-body font-medium tracking-tight">MediTrack</span>
         </div>
-        <AddMedicationDialog onAdd={addMedication} />
+        <div className="flex items-center gap-2">
+          <AddMedicationDialog onAdd={addMedication} />
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={signOut}>
+            <LogOut className="size-4" />
+          </Button>
+        </div>
       </nav>
 
       <main className="max-w-4xl mx-auto px-6 md:px-12 py-8">

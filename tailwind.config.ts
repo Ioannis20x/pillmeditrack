@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['Instrument Serif', 'serif'],
+        body: ['Outfit', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -46,6 +50,16 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        pill: {
+          coral: "hsl(var(--pill-coral))",
+          teal: "hsl(var(--pill-teal))",
+          amber: "hsl(var(--pill-amber))",
+          lavender: "hsl(var(--pill-lavender))",
+          blue: "hsl(var(--pill-blue))",
+          pink: "hsl(var(--pill-pink))",
+          green: "hsl(var(--pill-green))",
+          white: "hsl(var(--pill-white))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

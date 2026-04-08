@@ -46,6 +46,7 @@ const Index = () => {
         </div>
         <div className="flex items-center gap-2">
           <AddMedicationDialog onAdd={addMedication} />
+          <NotificationToggle />
           <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={signOut}>
             <LogOut className="size-4" />
           </Button>

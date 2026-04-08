@@ -2,10 +2,13 @@ import { useMedications } from '@/hooks/useMedications';
 import { MedicationCard } from '@/components/MedicationCard';
 import { AddMedicationDialog } from '@/components/AddMedicationDialog';
 import { TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
-import { Pill } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { Pill, LogOut, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  const { medications, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
+  const { medications, loading, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
+  const { signOut } = useAuth();
 
   const today = new Date().toISOString().split('T')[0];
   

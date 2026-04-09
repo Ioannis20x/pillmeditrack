@@ -73,10 +73,16 @@ export function useMedications() {
   };
 
   const updateMedication = async (id: string, updates: Partial<Medication>) => {
-    const dbUpdates: { notes?: string; name?: string; dosage?: string } = {};
+    const dbUpdates: Record<string, any> = {};
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.dosage !== undefined) dbUpdates.dosage = updates.dosage;
+    if (updates.unit !== undefined) dbUpdates.unit = updates.unit;
+    if (updates.pillShape !== undefined) dbUpdates.pill_shape = updates.pillShape;
+    if (updates.pillColor !== undefined) dbUpdates.pill_color = updates.pillColor;
+    if (updates.scheduleType !== undefined) dbUpdates.schedule_type = updates.scheduleType;
+    if (updates.timesOfDay !== undefined) dbUpdates.times_of_day = updates.timesOfDay || null;
+    if (updates.intervalHours !== undefined) dbUpdates.interval_hours = updates.intervalHours || null;
     
     const { error } = await supabase.from('medications').update(dbUpdates).eq('id', id);
     if (!error) fetchMedications();

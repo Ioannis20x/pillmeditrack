@@ -121,6 +121,36 @@ export type Database = {
         }
         Relationships: []
       }
+      reminder_settings: {
+        Row: {
+          created_at: string
+          evening_time: string
+          id: string
+          morning_time: string
+          noon_time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          evening_time?: string
+          id?: string
+          morning_time?: string
+          noon_time?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          evening_time?: string
+          id?: string
+          morning_time?: string
+          noon_time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

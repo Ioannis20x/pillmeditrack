@@ -3,13 +3,18 @@ import { MedicationCard } from '@/components/MedicationCard';
 import { AddMedicationDialog } from '@/components/AddMedicationDialog';
 import { TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
 import { useAuth } from '@/hooks/useAuth';
-import { Pill, LogOut, Loader2 } from 'lucide-react';
+import { useReminderSettings } from '@/hooks/useReminderSettings';
+import { Pill, LogOut, Loader2, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationToggle } from '@/components/NotificationToggle';
+import { ReminderSettingsDialog } from '@/components/ReminderSettingsDialog';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const { medications, loading, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
   const { signOut } = useAuth();
+  const { settings } = useReminderSettings();
+  const navigate = useNavigate();
 
   const today = new Date().toISOString().split('T')[0];
   
@@ -34,9 +39,14 @@ const Index = () => {
     return 'Guten Abend.';
   };
 
+  const getTimeForSlot = (time: TimeOfDay) => {
+    if (time === 'morning') return settings.morningTime;
+    if (time === 'noon') return settings.noonTime;
+    return settings.eveningTime;
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
       <nav className="flex items-center justify-between px-6 md:px-12 py-6">
         <div className="flex items-center gap-3">
           <div className="size-10 bg-primary rounded-full flex items-center justify-center">
@@ -44,8 +54,12 @@ const Index = () => {
           </div>
           <span className="text-xl font-body font-medium tracking-tight">MediTrack</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <AddMedicationDialog onAdd={addMedication} />
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={() => navigate('/history')}>
+            <CalendarDays className="size-4" />
+          </Button>
+          <ReminderSettingsDialog />
           <NotificationToggle />
           <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={signOut}>
             <LogOut className="size-4" />
@@ -58,7 +72,6 @@ const Index = () => {
           <div className="flex justify-center py-20"><Loader2 className="size-8 animate-spin text-primary" /></div>
         ) : (
         <>
-        {/* Hero */}
         <header className="mb-16">
           <h1 className="font-display text-5xl md:text-6xl italic leading-tight mb-3">
             {greeting()}<br />
@@ -96,7 +109,7 @@ const Index = () => {
               return (
                 <section key={time}>
                   <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-6">
-                    {config.icon} {config.label} — {config.time}
+                    {config.icon} {config.label} — {getTimeForSlot(time)}
                   </h2>
                   <div className="space-y-4">
                     {meds.map(med => (

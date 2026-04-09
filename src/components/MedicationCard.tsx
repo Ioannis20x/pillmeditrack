@@ -1,5 +1,6 @@
 import { Medication, TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
 import { PillVisualizer } from './PillVisualizer';
+import { EditMedicationDialog } from './EditMedicationDialog';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Check, Trash2, StickyNote } from 'lucide-react';
@@ -10,10 +11,11 @@ interface MedicationCardProps {
   timeOfDay: TimeOfDay;
   onToggleTaken: (id: string, key: string) => void;
   onRemove: (id: string) => void;
+  onUpdate: (id: string, updates: Partial<Medication>) => void;
   onUpdateNotes: (id: string, notes: string) => void;
 }
 
-export function MedicationCard({ medication, timeOfDay, onToggleTaken, onRemove, onUpdateNotes }: MedicationCardProps) {
+export function MedicationCard({ medication, timeOfDay, onToggleTaken, onRemove, onUpdate, onUpdateNotes }: MedicationCardProps) {
   const [showNotes, setShowNotes] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const takenKey = `${today}-${timeOfDay}`;
@@ -39,6 +41,7 @@ export function MedicationCard({ medication, timeOfDay, onToggleTaken, onRemove,
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <EditMedicationDialog medication={medication} onUpdate={onUpdate} />
           <Button
             variant="ghost"
             size="icon"

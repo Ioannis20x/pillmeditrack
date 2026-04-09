@@ -4,7 +4,7 @@ import { AddMedicationDialog } from '@/components/AddMedicationDialog';
 import { TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
 import { useAuth } from '@/hooks/useAuth';
 import { useReminderSettings } from '@/hooks/useReminderSettings';
-import { Pill, LogOut, Loader2, CalendarDays } from 'lucide-react';
+import { Pill, LogOut, Loader2, CalendarDays, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationToggle } from '@/components/NotificationToggle';
 import { ReminderSettingsDialog } from '@/components/ReminderSettingsDialog';
@@ -58,6 +58,9 @@ const Index = () => {
           <AddMedicationDialog onAdd={addMedication} />
           <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={() => navigate('/history')}>
             <CalendarDays className="size-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={() => navigate('/statistics')}>
+            <BarChart3 className="size-4" />
           </Button>
           <ReminderSettingsDialog />
           <NotificationToggle />
@@ -119,6 +122,7 @@ const Index = () => {
                         timeOfDay={time}
                         onToggleTaken={toggleTaken}
                         onRemove={removeMedication}
+                        onUpdate={updateMedication}
                         onUpdateNotes={(id, notes) => updateMedication(id, { notes })}
                       />
                     ))}
@@ -140,6 +144,7 @@ const Index = () => {
                       timeOfDay="morning"
                       onToggleTaken={toggleTaken}
                       onRemove={removeMedication}
+                      onUpdate={updateMedication}
                       onUpdateNotes={(id, notes) => updateMedication(id, { notes })}
                     />
                   ))}

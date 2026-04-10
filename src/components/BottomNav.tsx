@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Pill, CalendarDays, BarChart3, Settings } from 'lucide-react';
+import { Pill, CalendarDays, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AddMedicationDialog } from './AddMedicationDialog';
 import { Medication } from '@/types/medication';

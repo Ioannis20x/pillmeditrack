@@ -14,9 +14,10 @@ import { Plus, Search, Loader2 } from 'lucide-react';
 
 interface AddMedicationDialogProps {
   onAdd: (med: Omit<Medication, 'id' | 'taken' | 'createdAt'>) => void;
+  variant?: 'default' | 'bottom-nav';
 }
 
-export function AddMedicationDialog({ onAdd }: AddMedicationDialogProps) {
+export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicationDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [dosage, setDosage] = useState('');

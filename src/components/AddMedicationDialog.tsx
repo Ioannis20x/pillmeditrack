@@ -81,10 +81,17 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-full px-6 gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
-          <Plus className="size-4" />
-          Medikament hinzufügen
-        </Button>
+        {variant === 'bottom-nav' ? (
+          <button className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground">
+            <Plus className="size-5" />
+            <span className="text-[10px] font-medium">Hinzufügen</span>
+          </button>
+        ) : (
+          <Button className="rounded-full px-6 gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+            <Plus className="size-4" />
+            Medikament hinzufügen
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[520px] rounded-3xl border-border bg-card p-0 overflow-hidden max-h-[90vh] overflow-y-auto">
         <DialogHeader className="p-6 pb-0">

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, ChevronLeft, ChevronRight, TrendingUp, Calendar, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { BottomNav } from '@/components/BottomNav';
 
 type ViewMode = 'week' | 'month';
 
@@ -262,7 +263,9 @@ export default function Statistics() {
             </div>
           </>
         )}
+        <div className="h-20 md:hidden" />
       </main>
+      <BottomNav />
     </div>
   );
 }

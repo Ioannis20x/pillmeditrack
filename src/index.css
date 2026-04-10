@@ -129,4 +129,7 @@
   .font-body {
     font-family: var(--font-body);
   }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }

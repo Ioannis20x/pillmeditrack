@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Pill, ArrowLeft, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { BottomNav } from '@/components/BottomNav';
 
 interface HistoryEntry {
   id: string;
@@ -198,7 +199,9 @@ export default function History() {
             )}
           </div>
         )}
+        <div className="h-20 md:hidden" />
       </main>
+      <BottomNav />
     </div>
   );
 }

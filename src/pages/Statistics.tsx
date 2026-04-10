@@ -188,21 +188,21 @@ export default function Statistics() {
         ) : (
           <>
             {/* Overview cards */}
-            <div className="grid grid-cols-3 gap-4 mb-10">
-              <div className="rounded-2xl bg-card border border-border p-5 text-center">
-                <TrendingUp className="size-5 mx-auto mb-2 text-primary" />
-                <p className="text-3xl font-display italic">{overallRate}%</p>
-                <p className="text-xs text-muted-foreground mt-1">Einnahmetreue</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-10">
+              <div className="rounded-2xl bg-card border border-border p-4 md:p-5 text-center flex sm:flex-col items-center sm:items-center gap-3 sm:gap-0">
+                <TrendingUp className="size-5 text-primary sm:mb-2" />
+                <p className="text-2xl md:text-3xl font-display italic">{overallRate}%</p>
+                <p className="text-xs text-muted-foreground sm:mt-1">Einnahmetreue</p>
               </div>
-              <div className="rounded-2xl bg-card border border-border p-5 text-center">
-                <Target className="size-5 mx-auto mb-2 text-primary" />
-                <p className="text-3xl font-display italic">{overallTaken}/{overallTotal}</p>
-                <p className="text-xs text-muted-foreground mt-1">Dosen genommen</p>
+              <div className="rounded-2xl bg-card border border-border p-4 md:p-5 text-center flex sm:flex-col items-center sm:items-center gap-3 sm:gap-0">
+                <Target className="size-5 text-primary sm:mb-2" />
+                <p className="text-2xl md:text-3xl font-display italic">{overallTaken}/{overallTotal}</p>
+                <p className="text-xs text-muted-foreground sm:mt-1">Dosen genommen</p>
               </div>
-              <div className="rounded-2xl bg-card border border-border p-5 text-center">
-                <Calendar className="size-5 mx-auto mb-2 text-primary" />
-                <p className="text-3xl font-display italic">{bestStreak}</p>
-                <p className="text-xs text-muted-foreground mt-1">Tage-Streak</p>
+              <div className="rounded-2xl bg-card border border-border p-4 md:p-5 text-center flex sm:flex-col items-center sm:items-center gap-3 sm:gap-0">
+                <Calendar className="size-5 text-primary sm:mb-2" />
+                <p className="text-2xl md:text-3xl font-display italic">{bestStreak}</p>
+                <p className="text-xs text-muted-foreground sm:mt-1">Tage-Streak</p>
               </div>
             </div>
 

@@ -8,6 +8,7 @@ import { Pill, LogOut, Loader2, CalendarDays, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationToggle } from '@/components/NotificationToggle';
 import { ReminderSettingsDialog } from '@/components/ReminderSettingsDialog';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
@@ -47,74 +48,82 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="flex items-center justify-between px-6 md:px-12 py-6">
-        <div className="flex items-center gap-3">
-          <div className="size-10 bg-primary rounded-full flex items-center justify-center">
-            <Pill className="size-5 text-primary-foreground" />
+      <nav className="flex items-center justify-between px-4 md:px-12 py-4 md:py-6">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="size-8 md:size-10 bg-primary rounded-full flex items-center justify-center">
+            <Pill className="size-4 md:size-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-body font-medium tracking-tight">MediTrack</span>
+          <span className="text-lg md:text-xl font-body font-medium tracking-tight">MediTrack</span>
         </div>
-        <div className="flex items-center gap-1">
-          <AddMedicationDialog onAdd={addMedication} />
-          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={() => navigate('/history')}>
+        <div className="flex items-center gap-0.5 md:gap-1">
+          <div className="hidden sm:block">
+            <AddMedicationDialog onAdd={addMedication} />
+          </div>
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10" onClick={() => navigate('/history')}>
             <CalendarDays className="size-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={() => navigate('/statistics')}>
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10" onClick={() => navigate('/statistics')}>
             <BarChart3 className="size-4" />
           </Button>
           <ReminderSettingsDialog />
           <NotificationToggle />
-          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={signOut}>
+          <ThemeToggle />
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10" onClick={signOut}>
             <LogOut className="size-4" />
           </Button>
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-6 md:px-12 py-8">
+      <main className="max-w-4xl mx-auto px-4 md:px-12 py-4 md:py-8">
         {loading ? (
           <div className="flex justify-center py-20"><Loader2 className="size-8 animate-spin text-primary" /></div>
         ) : (
         <>
-        <header className="mb-16">
-          <h1 className="font-display text-5xl md:text-6xl italic leading-tight mb-3">
+        <header className="mb-8 md:mb-16">
+          <h1 className="font-display text-3xl md:text-5xl lg:text-6xl italic leading-tight mb-3">
             {greeting()}<br />
             <span className="text-muted-foreground">Alles unter Kontrolle.</span>
           </h1>
           {totalDoses > 0 && (
-            <div className="mt-6 flex items-center gap-4">
+            <div className="mt-4 md:mt-6 flex items-center gap-3 md:gap-4">
               <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-primary rounded-full transition-all duration-700" 
                   style={{ width: `${progress}%` }} 
                 />
               </div>
-              <span className="text-sm font-body text-muted-foreground font-medium tabular-nums">
+              <span className="text-xs md:text-sm font-body text-muted-foreground font-medium tabular-nums whitespace-nowrap">
                 {takenDoses}/{totalDoses} genommen
               </span>
             </div>
           )}
         </header>
 
+        {/* Mobile add button */}
+        <div className="sm:hidden mb-6">
+          <AddMedicationDialog onAdd={addMedication} />
+        </div>
+
         {medications.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="size-20 mx-auto mb-6 rounded-full bg-secondary flex items-center justify-center">
-              <Pill className="size-8 text-muted-foreground" />
+          <div className="text-center py-12 md:py-20">
+            <div className="size-16 md:size-20 mx-auto mb-4 md:mb-6 rounded-full bg-secondary flex items-center justify-center">
+              <Pill className="size-6 md:size-8 text-muted-foreground" />
             </div>
-            <h2 className="font-display text-3xl italic mb-2">Noch keine Medikamente</h2>
-            <p className="text-muted-foreground">Füge dein erstes Medikament hinzu, um loszulegen.</p>
+            <h2 className="font-display text-2xl md:text-3xl italic mb-2">Noch keine Medikamente</h2>
+            <p className="text-muted-foreground text-sm md:text-base">Füge dein erstes Medikament hinzu, um loszulegen.</p>
           </div>
         ) : (
-          <div className="space-y-12">
+          <div className="space-y-8 md:space-y-12">
             {(['morning', 'noon', 'evening'] as TimeOfDay[]).map(time => {
               const meds = getMedsForTime(time);
               if (meds.length === 0) return null;
               const config = TIME_OF_DAY_CONFIG[time];
               return (
                 <section key={time}>
-                  <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-6">
+                  <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-4 md:mb-6">
                     {config.icon} {config.label} — {getTimeForSlot(time)}
                   </h2>
-                  <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     {meds.map(med => (
                       <MedicationCard
                         key={med.id}
@@ -133,10 +142,10 @@ const Index = () => {
 
             {intervalMeds.length > 0 && (
               <section>
-                <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-6">
+                <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-4 md:mb-6">
                   ⏰ Intervall-Medikamente
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {intervalMeds.map(med => (
                     <MedicationCard
                       key={med.id}

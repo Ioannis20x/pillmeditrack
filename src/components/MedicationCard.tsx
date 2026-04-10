@@ -23,67 +23,75 @@ export function MedicationCard({ medication, timeOfDay, onToggleTaken, onRemove,
 
   return (
     <div className={cn(
-      'rounded-[2rem] p-6 border border-border transition-all duration-500',
+      'rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-6 border border-border transition-all duration-500',
       isTaken 
         ? 'bg-primary/5 border-primary/20' 
         : 'bg-card shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)]'
     )}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-5">
-          <PillVisualizer shape={medication.pillShape} color={medication.pillColor} />
-          <div>
-            <h3 className="text-lg font-body font-medium">{medication.name}</h3>
-            <p className="text-muted-foreground text-sm">
+      <div className="flex items-start md:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 md:gap-5 min-w-0 flex-1">
+          <PillVisualizer shape={medication.pillShape} color={medication.pillColor} size="sm" className="shrink-0" />
+          <div className="min-w-0">
+            <h3 className="text-base md:text-lg font-body font-medium truncate">{medication.name}</h3>
+            <p className="text-muted-foreground text-xs md:text-sm truncate">
               {medication.dosage} {medication.unit}
               {medication.notes && ' • '}
-              {medication.notes && <span className="italic">{medication.notes.slice(0, 30)}{medication.notes.length > 30 ? '...' : ''}</span>}
+              {medication.notes && <span className="italic">{medication.notes.slice(0, 20)}{medication.notes.length > 20 ? '...' : ''}</span>}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2 shrink-0">
           <EditMedicationDialog medication={medication} onUpdate={onUpdate} />
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full text-muted-foreground hover:text-foreground"
+            className="rounded-full text-muted-foreground hover:text-foreground size-8"
             onClick={() => setShowNotes(!showNotes)}
           >
-            <StickyNote className="size-4" />
+            <StickyNote className="size-3.5 md:size-4" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full text-muted-foreground hover:text-destructive"
+            className="rounded-full text-muted-foreground hover:text-destructive size-8 hidden sm:flex"
             onClick={() => onRemove(medication.id)}
           >
-            <Trash2 className="size-4" />
+            <Trash2 className="size-3.5 md:size-4" />
           </Button>
           <Button
             onClick={() => onToggleTaken(medication.id, takenKey)}
             className={cn(
-              'rounded-full px-5 py-2 text-sm font-medium transition-all',
+              'rounded-full px-3 md:px-5 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-all h-auto',
               isTaken 
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground'
             )}
           >
             {isTaken ? (
-              <span className="flex items-center gap-2"><Check className="size-4" /> Genommen</span>
+              <span className="flex items-center gap-1.5"><Check className="size-3.5 md:size-4" /> <span className="hidden sm:inline">Genommen</span><span className="sm:hidden">✓</span></span>
             ) : (
-              'Einnehmen'
+              <span className="whitespace-nowrap">Einnehmen</span>
             )}
           </Button>
         </div>
       </div>
       
       {showNotes && (
-        <div className="mt-4 pt-4 border-t border-border">
+        <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-border">
           <textarea
             value={medication.notes}
             onChange={(e) => onUpdateNotes(medication.id, e.target.value)}
             placeholder="Notizen hinzufügen..."
             className="w-full bg-secondary/50 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring/20 placeholder:text-muted-foreground/50 min-h-[80px]"
           />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="sm:hidden mt-2 text-destructive hover:text-destructive"
+            onClick={() => onRemove(medication.id)}
+          >
+            <Trash2 className="size-3.5 mr-1.5" /> Löschen
+          </Button>
         </div>
       )}
     </div>

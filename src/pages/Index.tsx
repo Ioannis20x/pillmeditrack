@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { NotificationToggle } from '@/components/NotificationToggle';
 import { ReminderSettingsDialog } from '@/components/ReminderSettingsDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { BottomNav } from '@/components/BottomNav';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
@@ -59,10 +60,10 @@ const Index = () => {
           <div className="hidden sm:block">
             <AddMedicationDialog onAdd={addMedication} />
           </div>
-          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10" onClick={() => navigate('/history')}>
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10 hidden md:flex" onClick={() => navigate('/history')}>
             <CalendarDays className="size-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10" onClick={() => navigate('/statistics')}>
+          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground size-8 md:size-10 hidden md:flex" onClick={() => navigate('/statistics')}>
             <BarChart3 className="size-4" />
           </Button>
           <ReminderSettingsDialog />
@@ -99,10 +100,7 @@ const Index = () => {
           )}
         </header>
 
-        {/* Mobile add button */}
-        <div className="sm:hidden mb-6">
-          <AddMedicationDialog onAdd={addMedication} />
-        </div>
+        {/* Mobile add button - hidden since bottom nav has it */}
 
         {medications.length === 0 ? (
           <div className="text-center py-12 md:py-20">
@@ -164,7 +162,10 @@ const Index = () => {
         )}
         </>
         )}
+        {/* Bottom padding for mobile nav */}
+        <div className="h-20 md:hidden" />
       </main>
+      <BottomNav onAddMedication={addMedication} />
     </div>
   );
 };

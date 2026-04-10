@@ -53,8 +53,8 @@ export function EditMedicationDialog({ medication, onUpdate }: EditMedicationDia
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground">
-          <Pencil className="size-4" />
+        <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground size-8">
+          <Pencil className="size-3.5 md:size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[520px] rounded-3xl border-border bg-card p-0 overflow-hidden max-h-[90vh] overflow-y-auto">

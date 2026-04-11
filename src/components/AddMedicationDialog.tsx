@@ -20,6 +20,8 @@ interface AddMedicationDialogProps {
 export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicationDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
+  const [brand, setBrand] = useState('');
+  const [activeIngredient, setActiveIngredient] = useState('');
   const [dosage, setDosage] = useState('');
   const [unit, setUnit] = useState('mg');
   const [pillShape, setPillShape] = useState<PillShape>('round');
@@ -52,6 +54,8 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
     if (!name.trim()) return;
     onAdd({
       name: name.trim(),
+      brand: brand.trim(),
+      activeIngredient: activeIngredient.trim(),
       dosage,
       unit,
       pillShape,
@@ -66,7 +70,7 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   };
 
   const resetForm = () => {
-    setName(''); setDosage(''); setUnit('mg'); setPillShape('round');
+    setName(''); setBrand(''); setActiveIngredient(''); setDosage(''); setUnit('mg'); setPillShape('round');
     setPillColor('white'); setScheduleType('times_of_day');
     setTimesOfDay(['morning']); setIntervalHours(8); setNotes('');
     setSearchQuery(''); setShowSearch(false);
@@ -129,6 +133,18 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Brand & Active Ingredient */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Marke</Label>
+              <Input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="z.B. Aspirin" className="rounded-xl bg-secondary/50 border-border" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Wirkstoff</Label>
+              <Input value={activeIngredient} onChange={(e) => setActiveIngredient(e.target.value)} placeholder="z.B. Acetylsalicylsäure" className="rounded-xl bg-secondary/50 border-border" />
+            </div>
           </div>
 
           {/* Dosage */}

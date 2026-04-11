@@ -6,6 +6,8 @@ export type TimeOfDay = 'morning' | 'noon' | 'evening';
 export interface Medication {
   id: string;
   name: string;
+  brand: string;
+  activeIngredient: string;
   dosage: string;
   unit: string;
   pillShape: PillShape;

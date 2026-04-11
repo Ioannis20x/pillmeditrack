@@ -19,6 +19,8 @@ interface EditMedicationDialogProps {
 export function EditMedicationDialog({ medication, onUpdate }: EditMedicationDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(medication.name);
+  const [brand, setBrand] = useState(medication.brand || '');
+  const [activeIngredient, setActiveIngredient] = useState(medication.activeIngredient || '');
   const [dosage, setDosage] = useState(medication.dosage);
   const [unit, setUnit] = useState(medication.unit);
   const [pillShape, setPillShape] = useState<PillShape>(medication.pillShape);
@@ -38,6 +40,8 @@ export function EditMedicationDialog({ medication, onUpdate }: EditMedicationDia
     if (!name.trim()) return;
     onUpdate(medication.id, {
       name: name.trim(),
+      brand: brand.trim(),
+      activeIngredient: activeIngredient.trim(),
       dosage,
       unit,
       pillShape,
@@ -67,6 +71,18 @@ export function EditMedicationDialog({ medication, onUpdate }: EditMedicationDia
           <div className="space-y-2">
             <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Name</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} className="rounded-xl bg-secondary/50 border-border" />
+          </div>
+
+          {/* Brand & Active Ingredient */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Marke</Label>
+              <Input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="z.B. Aspirin" className="rounded-xl bg-secondary/50 border-border" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Wirkstoff</Label>
+              <Input value={activeIngredient} onChange={(e) => setActiveIngredient(e.target.value)} placeholder="z.B. Acetylsalicylsäure" className="rounded-xl bg-secondary/50 border-border" />
+            </div>
           </div>
 
           {/* Dosage */}

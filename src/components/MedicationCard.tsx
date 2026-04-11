@@ -33,6 +33,11 @@ export function MedicationCard({ medication, timeOfDay, onToggleTaken, onRemove,
           <PillVisualizer shape={medication.pillShape} color={medication.pillColor} size="sm" className="shrink-0" />
           <div className="min-w-0">
             <h3 className="text-base md:text-lg font-body font-medium truncate">{medication.name}</h3>
+            {(medication.brand || medication.activeIngredient) && (
+              <p className="text-muted-foreground text-[11px] md:text-xs truncate">
+                {medication.brand}{medication.brand && medication.activeIngredient ? ' • ' : ''}{medication.activeIngredient}
+              </p>
+            )}
             <p className="text-muted-foreground text-xs md:text-sm truncate">
               {medication.dosage} {medication.unit}
               {medication.notes && ' • '}

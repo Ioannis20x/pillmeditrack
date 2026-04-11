@@ -48,6 +48,8 @@ export type Database = {
       }
       medications: {
         Row: {
+          active_ingredient: string
+          brand: string
           created_at: string
           dosage: string
           id: string
@@ -63,6 +65,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          active_ingredient?: string
+          brand?: string
           created_at?: string
           dosage?: string
           id?: string
@@ -78,6 +82,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          active_ingredient?: string
+          brand?: string
           created_at?: string
           dosage?: string
           id?: string

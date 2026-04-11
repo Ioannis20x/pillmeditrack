@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useMedications } from '@/hooks/useMedications';
 import { Button } from '@/components/ui/button';
 import { Pill, ArrowLeft, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +30,7 @@ function getFirstDayOfMonth(year: number, month: number) {
 
 export default function History() {
   const { user } = useAuth();
+  const { addMedication } = useMedications();
   const navigate = useNavigate();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
@@ -201,7 +203,7 @@ export default function History() {
         )}
         <div className="h-20 md:hidden" />
       </main>
-      <BottomNav />
+      <BottomNav onAddMedication={addMedication} />
     </div>
   );
 }

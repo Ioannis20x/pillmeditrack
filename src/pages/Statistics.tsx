@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useMedications } from '@/hooks/useMedications';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ChevronLeft, ChevronRight, TrendingUp, Calendar, Target } from 'lucide-react';
@@ -36,6 +37,7 @@ function formatDateStr(d: Date): string {
 
 export default function Statistics() {
   const { user } = useAuth();
+  const { addMedication: addMed } = useMedications();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('week');
   const [offset, setOffset] = useState(0);
@@ -265,7 +267,7 @@ export default function Statistics() {
         )}
         <div className="h-20 md:hidden" />
       </main>
-      <BottomNav />
+      <BottomNav onAddMedication={addMed} />
     </div>
   );
 }

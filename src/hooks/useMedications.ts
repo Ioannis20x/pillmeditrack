@@ -32,6 +32,8 @@ export function useMedications() {
     const mapped: Medication[] = (meds || []).map(m => ({
       id: m.id,
       name: m.name,
+      brand: m.brand || '',
+      activeIngredient: m.active_ingredient || '',
       dosage: m.dosage,
       unit: m.unit,
       pillShape: m.pill_shape as PillShape,
@@ -55,6 +57,8 @@ export function useMedications() {
     const { error } = await supabase.from('medications').insert({
       user_id: user.id,
       name: med.name,
+      brand: med.brand || '',
+      active_ingredient: med.activeIngredient || '',
       dosage: med.dosage,
       unit: med.unit,
       pill_shape: med.pillShape,
@@ -73,9 +77,11 @@ export function useMedications() {
   };
 
   const updateMedication = async (id: string, updates: Partial<Medication>) => {
-    const dbUpdates: { notes?: string; name?: string; dosage?: string; unit?: string; pill_shape?: string; pill_color?: string; schedule_type?: string; times_of_day?: string[] | null; interval_hours?: number | null } = {};
+    const dbUpdates: { notes?: string; name?: string; brand?: string; active_ingredient?: string; dosage?: string; unit?: string; pill_shape?: string; pill_color?: string; schedule_type?: string; times_of_day?: string[] | null; interval_hours?: number | null } = {};
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.name !== undefined) dbUpdates.name = updates.name;
+    if (updates.brand !== undefined) dbUpdates.brand = updates.brand;
+    if (updates.activeIngredient !== undefined) dbUpdates.active_ingredient = updates.activeIngredient;
     if (updates.dosage !== undefined) dbUpdates.dosage = updates.dosage;
     if (updates.unit !== undefined) dbUpdates.unit = updates.unit;
     if (updates.pillShape !== undefined) dbUpdates.pill_shape = updates.pillShape;

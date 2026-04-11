@@ -76,8 +76,10 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
     setSearchQuery(''); setShowSearch(false);
   };
 
-  const selectDrug = (brandName: string) => {
-    setName(brandName);
+  const selectDrug = (drug: { brand_name: string; generic_name: string; dosage_form: string }) => {
+    setName(drug.brand_name);
+    setBrand(drug.brand_name);
+    setActiveIngredient(drug.generic_name);
     setSearchQuery('');
     setShowSearch(false);
   };
@@ -124,11 +126,16 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
                 {results.map((drug, i) => (
                   <button
                     key={i}
-                    onClick={() => selectDrug(drug.brand_name)}
-                    className="w-full text-left px-4 py-3 hover:bg-secondary/50 transition-colors text-sm flex justify-between items-center border-b border-border last:border-0"
+                    onClick={() => selectDrug(drug)}
+                    className="w-full text-left px-4 py-3 hover:bg-secondary/50 transition-colors text-sm border-b border-border last:border-0"
                   >
-                    <span className="font-medium">{drug.brand_name}</span>
-                    <span className="text-muted-foreground text-xs">{drug.dosage_form}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{drug.brand_name}</span>
+                      <span className="text-muted-foreground text-xs">{drug.dosage_form}</span>
+                    </div>
+                    {drug.generic_name && (
+                      <p className="text-muted-foreground text-xs mt-0.5">{drug.generic_name}</p>
+                    )}
                   </button>
                 ))}
               </div>

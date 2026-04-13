@@ -130,7 +130,10 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
                     className="w-full text-left px-4 py-3 hover:bg-secondary/50 transition-colors text-sm border-b border-border last:border-0"
                   >
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">{drug.brand_name}</span>
+                      <span className="font-medium flex items-center gap-1.5">
+                        <span className="text-xs">{drug.source === 'de' ? '🇩🇪' : '🇺🇸'}</span>
+                        {drug.brand_name}
+                      </span>
                       <span className="text-muted-foreground text-xs">{drug.dosage_form}</span>
                     </div>
                     {drug.generic_name && (

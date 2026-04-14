@@ -11,7 +11,7 @@ import {
   PILL_SHAPES, PILL_COLORS
 } from '@/types/medication';
 import { cn } from '@/lib/utils';
-import { Plus, Search, Loader2, Filter, X, Star, Heart, Trash2 } from 'lucide-react';
+import { Plus, Search, Loader2, Filter, X, Star } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface AddMedicationDialogProps {
@@ -86,22 +86,15 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   };
 
   const loadFavorite = (fav: FavoriteMedication) => {
-    setName(fav.name);
-    setBrand(fav.brand);
-    setActiveIngredient(fav.activeIngredient);
-    setDosage(fav.dosage);
-    setUnit(fav.unit);
-    setPillShape(fav.pillShape);
-    setPillColor(fav.pillColor);
-    setScheduleType(fav.scheduleType);
-    setTimesOfDay(fav.timesOfDay || ['morning']);
-    setIntervalHours(fav.intervalHours || 8);
-    setNotes(fav.notes);
-    setShowSearch(false);
+    setName(fav.name); setBrand(fav.brand); setActiveIngredient(fav.activeIngredient);
+    setDosage(fav.dosage); setUnit(fav.unit); setPillShape(fav.pillShape);
+    setPillColor(fav.pillColor); setScheduleType(fav.scheduleType);
+    setTimesOfDay(fav.timesOfDay || ['morning']); setIntervalHours(fav.intervalHours || 8);
+    setNotes(fav.notes); setShowSearch(false);
   };
 
   const quickAddFavorite = (fav: FavoriteMedication) => {
-    const { id, ...med } = fav;
+    const { id: _id, ...med } = fav;
     onAdd(med);
   };
 

@@ -134,6 +134,38 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
         </DialogHeader>
         
         <div className="p-6 space-y-6">
+          {/* Favorites */}
+          {favorites.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-1.5">
+                <Star className="size-3" /> Favoriten
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {favorites.map(fav => (
+                  <div key={fav.id} className="group relative">
+                    <button
+                      onClick={() => quickAddFavorite(fav)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border hover:bg-primary/10 hover:border-primary/30 transition-all text-sm"
+                    >
+                      <PillVisualizer shape={fav.pillShape} color={fav.pillColor} size="xs" />
+                      <div className="text-left">
+                        <span className="font-medium text-xs">{fav.name}</span>
+                        {fav.dosage && <span className="text-muted-foreground text-[10px] ml-1">{fav.dosage}{fav.unit}</span>}
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => removeFavorite(fav.id)}
+                      className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-muted-foreground">Tippe auf einen Favoriten, um ihn sofort hinzuzufügen</p>
+            </div>
+          )}
+
           {/* Search */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -315,6 +347,18 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
               placeholder="Besondere Hinweise, Nebenwirkungen..."
               className="w-full bg-secondary/50 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring/20 placeholder:text-muted-foreground/50 min-h-[80px] border border-border"
             />
+          </div>
+
+          {/* Save as favorite */}
+          <div className="flex items-center gap-2">
+            <Checkbox 
+              id="save-favorite" 
+              checked={saveAsFavorite} 
+              onCheckedChange={(c) => setSaveAsFavorite(c === true)} 
+            />
+            <label htmlFor="save-favorite" className="text-sm text-muted-foreground cursor-pointer flex items-center gap-1.5">
+              <Star className="size-3.5" /> Als Favorit speichern
+            </label>
           </div>
 
           <Button onClick={handleSubmit} className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 py-6 text-base font-medium">

@@ -10,7 +10,7 @@ import {
   PILL_SHAPES, PILL_COLORS
 } from '@/types/medication';
 import { cn } from '@/lib/utils';
-import { Plus, Search, Loader2 } from 'lucide-react';
+import { Plus, Search, Loader2, Filter, X } from 'lucide-react';
 
 interface AddMedicationDialogProps {
   onAdd: (med: Omit<Medication, 'id' | 'taken' | 'createdAt'>) => void;
@@ -32,17 +32,19 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   const [notes, setNotes] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showCategories, setShowCategories] = useState(false);
   
-  const { results, loading, searchDrugs } = useOpenFDA();
+  const { results, loading, searchDrugs, categories } = useOpenFDA();
   const debounceRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      searchDrugs(searchQuery);
+      searchDrugs(searchQuery, selectedCategory || undefined);
     }, 400);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [searchQuery, searchDrugs]);
+  }, [searchQuery, selectedCategory, searchDrugs]);
 
   const toggleTimeOfDay = (t: TimeOfDay) => {
     setTimesOfDay(prev => 
@@ -73,7 +75,7 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
     setName(''); setBrand(''); setActiveIngredient(''); setDosage(''); setUnit('mg'); setPillShape('round');
     setPillColor('white'); setScheduleType('times_of_day');
     setTimesOfDay(['morning']); setIntervalHours(8); setNotes('');
-    setSearchQuery(''); setShowSearch(false);
+    setSearchQuery(''); setShowSearch(false); setSelectedCategory(null); setShowCategories(false);
   };
 
   const selectDrug = (drug: { brand_name: string; generic_name: string; dosage_form: string }) => {
@@ -107,9 +109,43 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
         <div className="p-6 space-y-6">
           {/* Search */}
           <div className="space-y-2">
-            <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
-              Medikament suchen
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+                Medikament suchen
+              </Label>
+              <button
+                onClick={() => setShowCategories(!showCategories)}
+                className={cn(
+                  'flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition-all',
+                  showCategories || selectedCategory ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                )}
+              >
+                <Filter className="size-3" />
+                {selectedCategory || 'Filter'}
+                {selectedCategory && (
+                  <X className="size-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setSelectedCategory(null); }} />
+                )}
+              </button>
+            </div>
+
+            {/* Category Filter */}
+            {showCategories && (
+              <div className="flex flex-wrap gap-1.5 p-3 bg-secondary/30 rounded-xl border border-border">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => { setSelectedCategory(selectedCategory === cat ? null : cat); setShowSearch(true); }}
+                    className={cn(
+                      'px-2.5 py-1 rounded-lg text-xs font-medium transition-all',
+                      selectedCategory === cat ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
@@ -122,7 +158,7 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
               {loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground animate-spin" />}
             </div>
             {showSearch && results.length > 0 && (
-              <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg max-h-40 overflow-y-auto">
+              <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg max-h-48 overflow-y-auto">
                 {results.map((drug, i) => (
                   <button
                     key={i}

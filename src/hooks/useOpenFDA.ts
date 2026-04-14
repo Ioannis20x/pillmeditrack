@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { GERMAN_MEDICATIONS, GermanDrug } from '@/data/germanMedications';
 
 interface DrugResult {
@@ -7,17 +7,28 @@ interface DrugResult {
   dosage_form: string;
   route: string;
   source: 'de' | 'fda';
+  category?: string;
 }
 
-function searchGermanDB(query: string): DrugResult[] {
+// Extract unique categories
+export function getGermanCategories(): string[] {
+  const cats = new Set<string>();
+  GERMAN_MEDICATIONS.forEach(d => { if (d.category) cats.add(d.category); });
+  return Array.from(cats).sort();
+}
+
+function searchGermanDB(query: string, category?: string): DrugResult[] {
   const q = query.toLowerCase();
   return GERMAN_MEDICATIONS
-    .filter(d =>
-      d.brand_name.toLowerCase().includes(q) ||
-      d.generic_name.toLowerCase().includes(q) ||
-      (d.category?.toLowerCase().includes(q))
-    )
-    .slice(0, 15)
+    .filter(d => {
+      const matchesCategory = !category || d.category === category;
+      const matchesQuery = !query || q.length < 2 ||
+        d.brand_name.toLowerCase().includes(q) ||
+        d.generic_name.toLowerCase().includes(q) ||
+        (d.category?.toLowerCase().includes(q));
+      return matchesCategory && matchesQuery;
+    })
+    .slice(0, 20)
     .map(d => ({ ...d, source: 'de' as const }));
 }
 
@@ -25,14 +36,25 @@ export function useOpenFDA() {
   const [results, setResults] = useState<DrugResult[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const searchDrugs = useCallback(async (query: string) => {
+  const categories = useMemo(() => getGermanCategories(), []);
+
+  const searchDrugs = useCallback(async (query: string, category?: string) => {
+    // If category is set, show filtered results even without query
+    if (!query && !category) {
+      setResults([]);
+      return;
+    }
+    if (category && (!query || query.length < 2)) {
+      setResults(searchGermanDB('', category));
+      return;
+    }
     if (!query || query.length < 2) {
       setResults([]);
       return;
     }
 
     // Search German DB instantly
-    const germanResults = searchGermanDB(query);
+    const germanResults = searchGermanDB(query, category);
     setResults(germanResults);
 
     // Also search OpenFDA in background
@@ -70,5 +92,5 @@ export function useOpenFDA() {
     }
   }, []);
 
-  return { results, loading, searchDrugs };
+  return { results, loading, searchDrugs, categories };
 }

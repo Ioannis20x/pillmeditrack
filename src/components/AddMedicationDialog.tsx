@@ -36,8 +36,10 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   const [showSearch, setShowSearch] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showCategories, setShowCategories] = useState(false);
+  const [saveAsFavorite, setSaveAsFavorite] = useState(false);
   
   const { results, loading, searchDrugs, categories } = useOpenFDA();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
   const debounceRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {

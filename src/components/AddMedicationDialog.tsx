@@ -58,7 +58,7 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
 
   const handleSubmit = () => {
     if (!name.trim()) return;
-    onAdd({
+    const med = {
       name: name.trim(),
       brand: brand.trim(),
       activeIngredient: activeIngredient.trim(),
@@ -70,7 +70,9 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
       timesOfDay: scheduleType === 'times_of_day' ? timesOfDay : undefined,
       intervalHours: scheduleType === 'interval' ? intervalHours : undefined,
       notes,
-    });
+    };
+    onAdd(med);
+    if (saveAsFavorite) addFavorite(med);
     setOpen(false);
     resetForm();
   };
@@ -80,6 +82,27 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
     setPillColor('white'); setScheduleType('times_of_day');
     setTimesOfDay(['morning']); setIntervalHours(8); setNotes('');
     setSearchQuery(''); setShowSearch(false); setSelectedCategory(null); setShowCategories(false);
+    setSaveAsFavorite(false);
+  };
+
+  const loadFavorite = (fav: FavoriteMedication) => {
+    setName(fav.name);
+    setBrand(fav.brand);
+    setActiveIngredient(fav.activeIngredient);
+    setDosage(fav.dosage);
+    setUnit(fav.unit);
+    setPillShape(fav.pillShape);
+    setPillColor(fav.pillColor);
+    setScheduleType(fav.scheduleType);
+    setTimesOfDay(fav.timesOfDay || ['morning']);
+    setIntervalHours(fav.intervalHours || 8);
+    setNotes(fav.notes);
+    setShowSearch(false);
+  };
+
+  const quickAddFavorite = (fav: FavoriteMedication) => {
+    const { id, ...med } = fav;
+    onAdd(med);
   };
 
   const selectDrug = (drug: { brand_name: string; generic_name: string; dosage_form: string }) => {

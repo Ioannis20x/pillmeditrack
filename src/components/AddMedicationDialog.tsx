@@ -5,12 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PillVisualizer } from './PillVisualizer';
 import { useOpenFDA } from '@/hooks/useOpenFDA';
+import { useFavorites, FavoriteMedication } from '@/hooks/useFavorites';
 import { 
   Medication, PillShape, PillColor, ScheduleType, TimeOfDay,
   PILL_SHAPES, PILL_COLORS
 } from '@/types/medication';
 import { cn } from '@/lib/utils';
-import { Plus, Search, Loader2, Filter, X } from 'lucide-react';
+import { Plus, Search, Loader2, Filter, X, Star, Heart, Trash2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface AddMedicationDialogProps {
   onAdd: (med: Omit<Medication, 'id' | 'taken' | 'createdAt'>) => void;

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 interface PillVisualizerProps {
   shape: PillShape;
   color: PillColor;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
 }
 
@@ -20,6 +20,7 @@ const colorMap: Record<PillColor, string> = {
 };
 
 const sizeMap = {
+  xs: { container: 'size-6', pill: 'scale-50' },
   sm: { container: 'size-10', pill: 'scale-75' },
   md: { container: 'size-14', pill: 'scale-100' },
   lg: { container: 'size-20', pill: 'scale-125' },

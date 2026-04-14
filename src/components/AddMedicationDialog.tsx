@@ -5,12 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PillVisualizer } from './PillVisualizer';
 import { useOpenFDA } from '@/hooks/useOpenFDA';
+import { useFavorites, FavoriteMedication } from '@/hooks/useFavorites';
 import { 
   Medication, PillShape, PillColor, ScheduleType, TimeOfDay,
   PILL_SHAPES, PILL_COLORS
 } from '@/types/medication';
 import { cn } from '@/lib/utils';
-import { Plus, Search, Loader2, Filter, X } from 'lucide-react';
+import { Plus, Search, Loader2, Filter, X, Star } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface AddMedicationDialogProps {
   onAdd: (med: Omit<Medication, 'id' | 'taken' | 'createdAt'>) => void;
@@ -34,8 +36,10 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   const [showSearch, setShowSearch] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showCategories, setShowCategories] = useState(false);
+  const [saveAsFavorite, setSaveAsFavorite] = useState(false);
   
   const { results, loading, searchDrugs, categories } = useOpenFDA();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
   const debounceRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -54,7 +58,7 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
 
   const handleSubmit = () => {
     if (!name.trim()) return;
-    onAdd({
+    const med = {
       name: name.trim(),
       brand: brand.trim(),
       activeIngredient: activeIngredient.trim(),
@@ -66,7 +70,9 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
       timesOfDay: scheduleType === 'times_of_day' ? timesOfDay : undefined,
       intervalHours: scheduleType === 'interval' ? intervalHours : undefined,
       notes,
-    });
+    };
+    onAdd(med);
+    if (saveAsFavorite) addFavorite(med);
     setOpen(false);
     resetForm();
   };
@@ -76,6 +82,13 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
     setPillColor('white'); setScheduleType('times_of_day');
     setTimesOfDay(['morning']); setIntervalHours(8); setNotes('');
     setSearchQuery(''); setShowSearch(false); setSelectedCategory(null); setShowCategories(false);
+    setSaveAsFavorite(false);
+  };
+
+
+  const quickAddFavorite = (fav: FavoriteMedication) => {
+    const { id: _id, ...med } = fav;
+    onAdd(med);
   };
 
   const selectDrug = (drug: { brand_name: string; generic_name: string; dosage_form: string }) => {
@@ -107,6 +120,38 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
         </DialogHeader>
         
         <div className="p-6 space-y-6">
+          {/* Favorites */}
+          {favorites.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-1.5">
+                <Star className="size-3" /> Favoriten
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {favorites.map(fav => (
+                  <div key={fav.id} className="group relative">
+                    <button
+                      onClick={() => quickAddFavorite(fav)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border hover:bg-primary/10 hover:border-primary/30 transition-all text-sm"
+                    >
+                      <PillVisualizer shape={fav.pillShape} color={fav.pillColor} size="xs" />
+                      <div className="text-left">
+                        <span className="font-medium text-xs">{fav.name}</span>
+                        {fav.dosage && <span className="text-muted-foreground text-[10px] ml-1">{fav.dosage}{fav.unit}</span>}
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => removeFavorite(fav.id)}
+                      className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-muted-foreground">Tippe auf einen Favoriten, um ihn sofort hinzuzufügen</p>
+            </div>
+          )}
+
           {/* Search */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -288,6 +333,18 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
               placeholder="Besondere Hinweise, Nebenwirkungen..."
               className="w-full bg-secondary/50 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring/20 placeholder:text-muted-foreground/50 min-h-[80px] border border-border"
             />
+          </div>
+
+          {/* Save as favorite */}
+          <div className="flex items-center gap-2">
+            <Checkbox 
+              id="save-favorite" 
+              checked={saveAsFavorite} 
+              onCheckedChange={(c) => setSaveAsFavorite(c === true)} 
+            />
+            <label htmlFor="save-favorite" className="text-sm text-muted-foreground cursor-pointer flex items-center gap-1.5">
+              <Star className="size-3.5" /> Als Favorit speichern
+            </label>
           </div>
 
           <Button onClick={handleSubmit} className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 py-6 text-base font-medium">

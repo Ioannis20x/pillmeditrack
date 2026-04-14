@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      medication_favorites: {
+        Row: {
+          active_ingredient: string
+          brand: string
+          created_at: string
+          dosage: string
+          id: string
+          interval_hours: number | null
+          name: string
+          notes: string | null
+          pill_color: string
+          pill_shape: string
+          schedule_type: string
+          times_of_day: string[] | null
+          unit: string
+          user_id: string
+        }
+        Insert: {
+          active_ingredient?: string
+          brand?: string
+          created_at?: string
+          dosage?: string
+          id?: string
+          interval_hours?: number | null
+          name: string
+          notes?: string | null
+          pill_color?: string
+          pill_shape?: string
+          schedule_type?: string
+          times_of_day?: string[] | null
+          unit?: string
+          user_id: string
+        }
+        Update: {
+          active_ingredient?: string
+          brand?: string
+          created_at?: string
+          dosage?: string
+          id?: string
+          interval_hours?: number | null
+          name?: string
+          notes?: string | null
+          pill_color?: string
+          pill_shape?: string
+          schedule_type?: string
+          times_of_day?: string[] | null
+          unit?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       medication_taken: {
         Row: {
           id: string

@@ -113,6 +113,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-8 md:space-y-12">
+            <InteractionWarnings medications={medications} />
             {(['morning', 'noon', 'evening'] as TimeOfDay[]).map(time => {
               const meds = getMedsForTime(time);
               if (meds.length === 0) return null;

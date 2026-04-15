@@ -10,6 +10,7 @@ import { NotificationToggle } from '@/components/NotificationToggle';
 import { ReminderSettingsDialog } from '@/components/ReminderSettingsDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { BottomNav } from '@/components/BottomNav';
+import { InteractionWarnings } from '@/components/InteractionWarnings';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {

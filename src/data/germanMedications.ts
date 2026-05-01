@@ -358,4 +358,85 @@ export const GERMAN_MEDICATIONS: GermanDrug[] = [
   { brand_name: "CellCept", generic_name: "Mycophenolatmofetil", dosage_form: "Tablette", route: "Oral", category: "Immunsuppression" },
   { brand_name: "Sandimmun", generic_name: "Ciclosporin", dosage_form: "Kapsel", route: "Oral", category: "Immunsuppression" },
   { brand_name: "Certican", generic_name: "Everolimus", dosage_form: "Tablette", route: "Oral", category: "Immunsuppression" },
+
+  // Weitere Antibiotika
+  { brand_name: "Cipro 1A Pharma", generic_name: "Ciprofloxacin", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Levofloxacin Aristo", generic_name: "Levofloxacin", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Klacid", generic_name: "Clarithromycin", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Azithromycin Hexal", generic_name: "Azithromycin", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Erythromycin-ratiopharm", generic_name: "Erythromycin", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Cotrim forte", generic_name: "Sulfamethoxazol / Trimethoprim", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Metronidazol Aristo", generic_name: "Metronidazol", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Rifampicin Eremfat", generic_name: "Rifampicin", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+
+  // Antimykotika
+  { brand_name: "Fluconazol-ratiopharm", generic_name: "Fluconazol", dosage_form: "Kapsel", route: "Oral", category: "Antimykotikum" },
+  { brand_name: "Itraconazol Aristo", generic_name: "Itraconazol", dosage_form: "Kapsel", route: "Oral", category: "Antimykotikum" },
+  { brand_name: "Vfend", generic_name: "Voriconazol", dosage_form: "Tablette", route: "Oral", category: "Antimykotikum" },
+
+  // Weitere Antikoagulanzien (NOAK)
+  { brand_name: "Xarelto", generic_name: "Rivaroxaban", dosage_form: "Tablette", route: "Oral", category: "Blutverdünner" },
+  { brand_name: "Eliquis", generic_name: "Apixaban", dosage_form: "Tablette", route: "Oral", category: "Blutverdünner" },
+  { brand_name: "Pradaxa", generic_name: "Dabigatran", dosage_form: "Kapsel", route: "Oral", category: "Blutverdünner" },
+  { brand_name: "Lixiana", generic_name: "Edoxaban", dosage_form: "Tablette", route: "Oral", category: "Blutverdünner" },
+  { brand_name: "Plavix", generic_name: "Clopidogrel", dosage_form: "Tablette", route: "Oral", category: "Blutverdünner" },
+  { brand_name: "Brilique", generic_name: "Ticagrelor", dosage_form: "Tablette", route: "Oral", category: "Blutverdünner" },
+
+  // Antiarrhythmika
+  { brand_name: "Cordarex", generic_name: "Amiodaron", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Multaq", generic_name: "Dronedaron", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Digimerck", generic_name: "Digitoxin", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Lanicor", generic_name: "Digoxin", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Verapamil-ratiopharm", generic_name: "Verapamil", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Diltiazem-ratiopharm", generic_name: "Diltiazem", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+
+  // Weitere Statine / Lipidsenker
+  { brand_name: "Sortis", generic_name: "Atorvastatin", dosage_form: "Tablette", route: "Oral", category: "Cholesterin" },
+  { brand_name: "Crestor", generic_name: "Rosuvastatin", dosage_form: "Tablette", route: "Oral", category: "Cholesterin" },
+  { brand_name: "Pravastatin-ratiopharm", generic_name: "Pravastatin", dosage_form: "Tablette", route: "Oral", category: "Cholesterin" },
+  { brand_name: "Ezetrol", generic_name: "Ezetimib", dosage_form: "Tablette", route: "Oral", category: "Cholesterin" },
+
+  // Diabetes erweitert
+  { brand_name: "Jardiance", generic_name: "Empagliflozin", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Forxiga", generic_name: "Dapagliflozin", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Trajenta", generic_name: "Linagliptin", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Januvia", generic_name: "Sitagliptin", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Ozempic", generic_name: "Semaglutid", dosage_form: "Injektion", route: "Subkutan", category: "Diabetes" },
+  { brand_name: "Trulicity", generic_name: "Dulaglutid", dosage_form: "Injektion", route: "Subkutan", category: "Diabetes" },
+  { brand_name: "Glimepirid-ratiopharm", generic_name: "Glimepirid", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+
+  // Asthma / COPD
+  { brand_name: "Salbutamol-ratiopharm", generic_name: "Salbutamol", dosage_form: "Spray", route: "Inhalativ", category: "Asthma" },
+  { brand_name: "Sultanol", generic_name: "Salbutamol", dosage_form: "Spray", route: "Inhalativ", category: "Asthma" },
+  { brand_name: "Berodual", generic_name: "Fenoterol / Ipratropium", dosage_form: "Spray", route: "Inhalativ", category: "Asthma" },
+  { brand_name: "Spiriva", generic_name: "Tiotropium", dosage_form: "Pulver", route: "Inhalativ", category: "Asthma" },
+  { brand_name: "Symbicort", generic_name: "Budesonid / Formoterol", dosage_form: "Spray", route: "Inhalativ", category: "Asthma" },
+  { brand_name: "Foster", generic_name: "Beclometason / Formoterol", dosage_form: "Spray", route: "Inhalativ", category: "Asthma" },
+  { brand_name: "Singulair", generic_name: "Montelukast", dosage_form: "Tablette", route: "Oral", category: "Asthma" },
+  { brand_name: "Theophyllin-ratiopharm", generic_name: "Theophyllin", dosage_form: "Kapsel", route: "Oral", category: "Asthma" },
+
+  // Gicht
+  { brand_name: "Allopurinol-ratiopharm", generic_name: "Allopurinol", dosage_form: "Tablette", route: "Oral", category: "Gicht" },
+  { brand_name: "Adenuric", generic_name: "Febuxostat", dosage_form: "Tablette", route: "Oral", category: "Gicht" },
+  { brand_name: "Colchicin Tiofarma", generic_name: "Colchicin", dosage_form: "Tablette", route: "Oral", category: "Gicht" },
+
+  // Weitere Antidepressiva
+  { brand_name: "Trevilor", generic_name: "Venlafaxin", dosage_form: "Kapsel", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Cymbalta", generic_name: "Duloxetin", dosage_form: "Kapsel", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Saroten", generic_name: "Amitriptylin", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Remergil", generic_name: "Mirtazapin", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Aurorix", generic_name: "Moclobemid", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+
+  // Schlaf / Beruhigung
+  { brand_name: "Tavor", generic_name: "Lorazepam", dosage_form: "Tablette", route: "Oral", category: "Beruhigung" },
+  { brand_name: "Valium", generic_name: "Diazepam", dosage_form: "Tablette", route: "Oral", category: "Beruhigung" },
+  { brand_name: "Stilnox", generic_name: "Zolpidem", dosage_form: "Tablette", route: "Oral", category: "Beruhigung" },
+  { brand_name: "Zopiclon-ratiopharm", generic_name: "Zopiclon", dosage_form: "Tablette", route: "Oral", category: "Beruhigung" },
+
+  // Opioide
+  { brand_name: "Targin", generic_name: "Oxycodon / Naloxon", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Palladon", generic_name: "Hydromorphon", dosage_form: "Kapsel", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "MST Mundipharma", generic_name: "Morphin", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Durogesic", generic_name: "Fentanyl", dosage_form: "Pflaster", route: "Transdermal", category: "Schmerzmittel" },
+  { brand_name: "Codein-ratiopharm", generic_name: "Codein", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
 ];

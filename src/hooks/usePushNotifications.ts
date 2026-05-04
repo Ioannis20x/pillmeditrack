@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { PushNotifications } from '@capacitor/push-notifications';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+
+// ── Web Push helpers ──────────────────────────────────────────────────────────
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -24,8 +28,12 @@ async function fetchServerVapidKey(): Promise<string> {
   return data.publicKey as string;
 }
 
+// ── Hook ──────────────────────────────────────────────────────────────────────
+
 export function usePushNotifications() {
   const { user } = useAuth();
+  const isNative = Capacitor.isNativePlatform();
+
   const [permission, setPermission] = useState<NotificationPermission>(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
@@ -34,35 +42,104 @@ export function usePushNotifications() {
   const [supported, setSupported] = useState(false);
 
   useEffect(() => {
-    setSupported('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window);
-  }, []);
+    if (isNative) {
+      setSupported(true);
+    } else {
+      setSupported('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window);
+    }
+  }, [isNative]);
 
+  // Check existing native subscription
   useEffect(() => {
-    if (!supported || !user) return;
-    navigator.serviceWorker.ready.then(async (registration) => {
-      const subscription = await registration.pushManager.getSubscription();
-      setIsSubscribed(!!subscription);
-    }).catch(() => {});
-  }, [supported, user]);
+    if (!isNative || !user) return;
+    supabase
+      .from('device_tokens')
+      .select('id')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => setIsSubscribed(!!data));
+  }, [isNative, user]);
 
-  const subscribe = useCallback(async () => {
+  // Check existing web subscription
+  useEffect(() => {
+    if (isNative || !supported || !user) return;
+    navigator.serviceWorker.ready
+      .then(async (reg) => {
+        const sub = await reg.pushManager.getSubscription();
+        setIsSubscribed(!!sub);
+      })
+      .catch(() => {});
+  }, [isNative, supported, user]);
+
+  // ── Native subscribe ────────────────────────────────────────────────────────
+  const subscribeNative = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      let permResult = await PushNotifications.checkPermissions();
+      if (permResult.receive === 'prompt') {
+        permResult = await PushNotifications.requestPermissions();
+      }
+      if (permResult.receive !== 'granted') {
+        setPermission('denied');
+        return;
+      }
+      setPermission('granted');
+
+      await PushNotifications.register();
+
+      await new Promise<void>((resolve, reject) => {
+        PushNotifications.addListener('registration', async (token) => {
+          const platform = Capacitor.getPlatform() as 'ios' | 'android';
+          await supabase.from('device_tokens').upsert(
+            { user_id: user.id, token: token.value, platform },
+            { onConflict: 'user_id,token' }
+          );
+          setIsSubscribed(true);
+          resolve();
+        });
+        PushNotifications.addListener('registrationError', (err) => {
+          console.error('Native push registration error:', err);
+          reject(err);
+        });
+      });
+    } catch (err) {
+      console.error('Native subscribe failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  // ── Native unsubscribe ──────────────────────────────────────────────────────
+  const unsubscribeNative = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      await supabase.from('device_tokens').delete().eq('user_id', user.id);
+      await PushNotifications.removeAllListeners();
+      setIsSubscribed(false);
+    } catch (err) {
+      console.error('Native unsubscribe failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  // ── Web subscribe ───────────────────────────────────────────────────────────
+  const subscribeWeb = useCallback(async () => {
     if (!supported || !user) return;
     setLoading(true);
     try {
       const perm = await Notification.requestPermission();
       setPermission(perm);
-      if (perm !== 'granted') { setLoading(false); return; }
+      if (perm !== 'granted') return;
 
       const vapidKey = await fetchServerVapidKey();
       const registration = await navigator.serviceWorker.ready;
 
-      // Unsubscribe any existing (possibly stale) subscription
       const existing = await registration.pushManager.getSubscription();
       if (existing) {
-        try {
-          // Remove from server too
-          await supabase.from('push_subscriptions').delete().eq('endpoint', existing.endpoint);
-        } catch {}
+        await supabase.from('push_subscriptions').delete().eq('endpoint', existing.endpoint);
         await existing.unsubscribe();
       }
 
@@ -73,25 +150,27 @@ export function usePushNotifications() {
 
       const rawP256 = subscription.getKey('p256dh');
       const rawAuth = subscription.getKey('auth');
-      const p256dh = rawP256 ? arrayBufferToBase64Url(rawP256) : '';
-      const authKey = rawAuth ? arrayBufferToBase64Url(rawAuth) : '';
 
-      await supabase.from('push_subscriptions').upsert({
-        user_id: user.id,
-        endpoint: subscription.endpoint,
-        p256dh,
-        auth_key: authKey,
-      }, { onConflict: 'user_id,endpoint' });
+      await supabase.from('push_subscriptions').upsert(
+        {
+          user_id: user.id,
+          endpoint: subscription.endpoint,
+          p256dh: rawP256 ? arrayBufferToBase64Url(rawP256) : '',
+          auth_key: rawAuth ? arrayBufferToBase64Url(rawAuth) : '',
+        },
+        { onConflict: 'user_id,endpoint' }
+      );
 
       setIsSubscribed(true);
     } catch (err) {
-      console.error('Push subscription failed:', err);
+      console.error('Web push subscription failed:', err);
     } finally {
       setLoading(false);
     }
   }, [supported, user]);
 
-  const unsubscribe = useCallback(async () => {
+  // ── Web unsubscribe ─────────────────────────────────────────────────────────
+  const unsubscribeWeb = useCallback(async () => {
     if (!supported || !user) return;
     setLoading(true);
     try {
@@ -104,14 +183,20 @@ export function usePushNotifications() {
           .eq('endpoint', subscription.endpoint);
         await subscription.unsubscribe();
       }
-      // Also clear any orphaned server rows for this user
       setIsSubscribed(false);
     } catch (err) {
-      console.error('Push unsubscribe failed:', err);
+      console.error('Web push unsubscribe failed:', err);
     } finally {
       setLoading(false);
     }
   }, [supported, user]);
 
-  return { supported, permission, isSubscribed, loading, subscribe, unsubscribe };
+  return {
+    supported,
+    permission,
+    isSubscribed,
+    loading,
+    subscribe: isNative ? subscribeNative : subscribeWeb,
+    unsubscribe: isNative ? unsubscribeNative : unsubscribeWeb,
+  };
 }

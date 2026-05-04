@@ -22,6 +22,86 @@ function getTimeOfDayNow(): string | null {
   return null;
 }
 
+// ── FCM helpers ───────────────────────────────────────────────────────────────
+
+async function getFCMAccessToken(clientEmail: string, privateKey: string): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  const payload = {
+    iss: clientEmail,
+    scope: "https://www.googleapis.com/auth/firebase.messaging",
+    aud: "https://oauth2.googleapis.com/token",
+    exp: now + 3600,
+    iat: now,
+  };
+
+  const header = btoa(JSON.stringify({ alg: "RS256", typ: "JWT" }))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const body = btoa(JSON.stringify(payload))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+
+  const pem = privateKey.replace(/\\n/g, "\n");
+  const pemBody = pem.replace(/-----.*?-----/g, "").replace(/\s/g, "");
+  const keyBuffer = Uint8Array.from(atob(pemBody), (c) => c.charCodeAt(0));
+
+  const cryptoKey = await crypto.subtle.importKey(
+    "pkcs8",
+    keyBuffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
+  const signingInput = `${header}.${body}`;
+  const signatureBuffer = await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    cryptoKey,
+    new TextEncoder().encode(signingInput),
+  );
+  const signature = btoa(String.fromCharCode(...new Uint8Array(signatureBuffer)))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+
+  const jwt = `${signingInput}.${signature}`;
+
+  const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+  });
+  const { access_token } = await tokenRes.json();
+  return access_token;
+}
+
+async function sendFCM(
+  token: string,
+  payload: { title: string; body: string; tag: string },
+  projectId: string,
+  accessToken: string,
+): Promise<number> {
+  const res = await fetch(
+    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: {
+          token,
+          notification: { title: payload.title, body: payload.body },
+          android: { notification: { tag: payload.tag, sound: "default" } },
+          apns: {
+            payload: { aps: { sound: "default", badge: 1 } },
+          },
+        },
+      }),
+    },
+  );
+  return res.status;
+}
+
+// ── Main handler ──────────────────────────────────────────────────────────────
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -45,25 +125,24 @@ Deno.serve(async (req) => {
     const vapidPublicKey = Deno.env.get("VAPID_PUBLIC_KEY")!;
     const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY")!;
 
+    const fcmProjectId = Deno.env.get("FIREBASE_PROJECT_ID");
+    const fcmClientEmail = Deno.env.get("FIREBASE_CLIENT_EMAIL");
+    const fcmPrivateKey = Deno.env.get("FIREBASE_PRIVATE_KEY");
+    const fcmEnabled = !!(fcmProjectId && fcmClientEmail && fcmPrivateKey);
+
     if (!vapidPublicKey || !vapidPrivateKey) {
       throw new Error("VAPID keys not configured");
     }
 
-    webpush.setVapidDetails(
-      "mailto:noreply@meditrack.app",
-      vapidPublicKey,
-      vapidPrivateKey,
-    );
+    webpush.setVapidDetails("mailto:noreply@meditrack.app", vapidPublicKey, vapidPrivateKey);
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Allow manual trigger with a specific time_of_day in body
     let currentTimeOfDay: string | null = null;
     try {
       const body = await req.json();
       if (body?.time_of_day) currentTimeOfDay = body.time_of_day;
     } catch { /* no body */ }
-    
     if (!currentTimeOfDay) currentTimeOfDay = getTimeOfDayNow();
 
     if (!currentTimeOfDay) {
@@ -72,7 +151,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get medications for this time
     const { data: medications, error: medError } = await supabase
       .from("medications")
       .select("*")
@@ -97,46 +175,73 @@ Deno.serve(async (req) => {
         .eq("medication_id", med.id)
         .eq("taken_key", takenKey)
         .maybeSingle();
-
       if (!taken) {
         if (!userMeds[med.user_id]) userMeds[med.user_id] = [];
         userMeds[med.user_id].push(med);
       }
     }
 
-    // Send notifications
+    // Get FCM access token once (reused for all FCM sends)
+    let fcmAccessToken: string | null = null;
+    if (fcmEnabled) {
+      try {
+        fcmAccessToken = await getFCMAccessToken(fcmClientEmail!, fcmPrivateKey!);
+      } catch (e) {
+        console.error("FCM access token error:", e);
+      }
+    }
+
     let sent = 0;
+    const timeLabel =
+      currentTimeOfDay === "morning" ? "Morgens" :
+      currentTimeOfDay === "noon" ? "Mittags" : "Abends";
+
     for (const [userId, meds] of Object.entries(userMeds)) {
-      const { data: subscriptions } = await supabase
+      const medNames = meds.map((m: any) => m.name).join(", ");
+      const notifPayload = {
+        title: `💊 ${timeLabel}: Medikamente einnehmen`,
+        body: medNames,
+        tag: `med-${currentTimeOfDay}-${today}`,
+      };
+
+      // ── Web Push ────────────────────────────────────────────────────────────
+      const { data: webSubs } = await supabase
         .from("push_subscriptions")
         .select("*")
         .eq("user_id", userId);
 
-      if (!subscriptions || subscriptions.length === 0) continue;
-
-      const medNames = meds.map((m: any) => m.name).join(", ");
-      const timeLabel = currentTimeOfDay === "morning" ? "Morgens" : currentTimeOfDay === "noon" ? "Mittags" : "Abends";
-      const payload = JSON.stringify({
-        title: `💊 ${timeLabel}: Medikamente einnehmen`,
-        body: medNames,
-        tag: `med-${currentTimeOfDay}-${today}`,
-      });
-
-      for (const sub of subscriptions) {
+      for (const sub of webSubs ?? []) {
         try {
           await webpush.sendNotification(
-            {
-              endpoint: sub.endpoint,
-              keys: { p256dh: sub.p256dh, auth: sub.auth_key },
-            },
-            payload,
+            { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth_key } },
+            JSON.stringify(notifPayload),
           );
           sent++;
         } catch (err: any) {
-          console.error(`Push failed for ${sub.endpoint}:`, err?.statusCode, err?.body);
-          // Remove expired/invalid subscriptions
+          console.error(`Web push failed:`, err?.statusCode, err?.body);
           if (err?.statusCode === 410 || err?.statusCode === 404) {
             await supabase.from("push_subscriptions").delete().eq("id", sub.id);
+          }
+        }
+      }
+
+      // ── FCM (native) ────────────────────────────────────────────────────────
+      if (fcmAccessToken && fcmProjectId) {
+        const { data: deviceTokens } = await supabase
+          .from("device_tokens")
+          .select("*")
+          .eq("user_id", userId);
+
+        for (const dt of deviceTokens ?? []) {
+          try {
+            const status = await sendFCM(dt.token, notifPayload, fcmProjectId, fcmAccessToken);
+            if (status === 200) {
+              sent++;
+            } else if (status === 404 || status === 410) {
+              await supabase.from("device_tokens").delete().eq("id", dt.id);
+            }
+          } catch (err) {
+            console.error(`FCM failed for token ${dt.token}:`, err);
           }
         }
       }

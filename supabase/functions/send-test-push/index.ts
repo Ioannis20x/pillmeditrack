@@ -86,7 +86,8 @@ Deno.serve(async (req) => {
         );
         sent++;
       } catch (err: any) {
-        errors.push({ endpoint: sub.endpoint, status: err?.statusCode, body: err?.body });
+        console.error("Push failed:", err?.statusCode, err?.body, err?.message);
+        errors.push({ endpoint: sub.endpoint, status: err?.statusCode, body: err?.body ?? err?.message });
         if (err?.statusCode === 410 || err?.statusCode === 404) {
           await admin.from("push_subscriptions").delete().eq("id", sub.id);
         }

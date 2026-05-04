@@ -86,9 +86,23 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
   };
 
 
-  const quickAddFavorite = (fav: FavoriteMedication) => {
-    const { id: _id, ...med } = fav;
-    onAdd(med);
+  const applyFavorite = (fav: FavoriteMedication) => {
+    setName(fav.name);
+    setBrand(fav.brand || '');
+    setActiveIngredient(fav.activeIngredient || '');
+    setDosage(fav.dosage || '');
+    setUnit(fav.unit || 'mg');
+    setPillShape(fav.pillShape);
+    setPillColor(fav.pillColor);
+    setScheduleType(fav.scheduleType);
+    if (fav.scheduleType === 'times_of_day') {
+      setTimesOfDay(fav.timesOfDay && fav.timesOfDay.length > 0 ? fav.timesOfDay : ['morning']);
+    } else if (fav.intervalHours) {
+      setIntervalHours(fav.intervalHours);
+    }
+    setNotes(fav.notes || '');
+    setShowSearch(false);
+    setSearchQuery('');
   };
 
   const selectDrug = (drug: { brand_name: string; generic_name: string; dosage_form: string }) => {
@@ -130,7 +144,8 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
                 {favorites.map(fav => (
                   <div key={fav.id} className="group relative">
                     <button
-                      onClick={() => quickAddFavorite(fav)}
+                      type="button"
+                      onClick={() => applyFavorite(fav)}
                       className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border hover:bg-primary/10 hover:border-primary/30 transition-all text-sm"
                     >
                       <PillVisualizer shape={fav.pillShape} color={fav.pillColor} size="xs" />
@@ -148,7 +163,7 @@ export function AddMedicationDialog({ onAdd, variant = 'default' }: AddMedicatio
                   </div>
                 ))}
               </div>
-              <p className="text-[10px] text-muted-foreground">Tippe auf einen Favoriten, um ihn sofort hinzuzufügen</p>
+              <p className="text-[10px] text-muted-foreground">Tippe auf einen Favoriten, um die Felder zu übernehmen — danach noch „Speichern" drücken</p>
             </div>
           )}
 

@@ -7,7 +7,15 @@ const corsHeaders = {
 };
 
 function getTimeOfDayNow(): string | null {
-  const hour = new Date().getHours();
+  const now = new Date();
+  const hour = parseInt(
+    new Intl.DateTimeFormat("de-DE", {
+      timeZone: "Europe/Berlin",
+      hour: "numeric",
+      hour12: false,
+    }).format(now),
+    10,
+  );
   if (hour >= 7 && hour <= 9) return "morning";
   if (hour >= 12 && hour <= 14) return "noon";
   if (hour >= 19 && hour <= 21) return "evening";
@@ -17,6 +25,18 @@ function getTimeOfDayNow(): string | null {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
+  }
+
+  // Auth: accept service-role JWT or cron secret
+  const cronSecret = Deno.env.get("CRON_SECRET");
+  const isFromCron = cronSecret && req.headers.get("x-cron-secret") === cronSecret;
+  const authHeader = req.headers.get("authorization") ?? "";
+  const isFromAdmin = authHeader === `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
+  if (!isFromCron && !isFromAdmin) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   try {

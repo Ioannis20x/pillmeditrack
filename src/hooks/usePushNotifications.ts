@@ -45,11 +45,6 @@ export function usePushNotifications() {
     }).catch(() => {});
   }, [supported, user]);
 
-  useEffect(() => {
-    if (!supported) return;
-    navigator.serviceWorker.register('/sw-push.js').catch(console.error);
-  }, [supported]);
-
   const subscribe = useCallback(async () => {
     if (!supported || !user) return;
     setLoading(true);

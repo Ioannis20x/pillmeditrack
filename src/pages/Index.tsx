@@ -11,6 +11,7 @@ import { ReminderSettingsDialog } from '@/components/ReminderSettingsDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { InteractionWarnings } from '@/components/InteractionWarnings';
+import { PushStatusCard } from '@/components/PushStatusCard';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
@@ -113,6 +114,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-8 md:space-y-12">
+            <PushStatusCard />
             <InteractionWarnings medications={medications} />
             {(['morning', 'noon', 'evening'] as TimeOfDay[]).map(time => {
               const meds = getMedsForTime(time);

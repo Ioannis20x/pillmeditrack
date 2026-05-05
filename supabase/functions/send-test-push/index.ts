@@ -1,3 +1,4 @@
+// v2
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.102.1";
 import webpush from "npm:web-push@3.6.7";
 

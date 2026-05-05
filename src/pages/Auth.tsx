@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { lovable } from '@/integrations/lovable';
+import { supabase } from '@/integrations/supabase/client';
 import { Pill, Loader2 } from 'lucide-react';
+
+const DEEP_LINK_SCHEME = 'com.pillpal.meditrack://auth/callback';
 
 const Auth = () => {
   const [loading, setLoading] = useState<string | null>(null);
@@ -12,13 +17,29 @@ const Auth = () => {
     setLoading(provider);
     setError(null);
     try {
-      const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: window.location.origin,
-      });
-      if (result.error) {
-        setError(result.error.message || 'Anmeldung fehlgeschlagen');
-      } else if (!result.redirected) {
-        navigate('/');
+      if (Capacitor.isNativePlatform()) {
+        // Native: use Supabase directly with deep link redirect
+        const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: DEEP_LINK_SCHEME,
+            skipBrowserRedirect: true,
+          },
+        });
+        if (oauthError) throw oauthError;
+        if (data?.url) {
+          await Browser.open({ url: data.url });
+        }
+      } else {
+        // Web: use Lovable auth
+        const result = await lovable.auth.signInWithOAuth(provider, {
+          redirect_uri: window.location.origin,
+        });
+        if (result.error) {
+          setError(result.error.message || 'Anmeldung fehlgeschlagen');
+        } else if (!result.redirected) {
+          navigate('/');
+        }
       }
     } catch (e: any) {
       setError(e.message || 'Anmeldung fehlgeschlagen');

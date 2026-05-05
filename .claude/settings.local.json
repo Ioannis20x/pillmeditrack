@@ -3,7 +3,8 @@
     "allow": [
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\ioann\\\\Nextcloud\\\\Projekte\\\\PillPal-Github\\\\pillmeditrack\" -Force)",
       "Bash(Select-Object Name, FullName)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\ioann\\\\Nextcloud\\\\Projekte\\\\PillPal-Github\\\\pillmeditrack\\\\android\\\\capacitor-cordova-android-plugins\\\\src\\\\main\\\\res\\\\.gitkeep\" -Force)"
     ]
   }
 }

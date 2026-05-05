@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "858486979390",
+    "project_id": "pillpal-20x",
+    "storage_bucket": "pillpal-20x.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858486979390:android:0bd97ab3ac5848d2798a6f",
+        "android_client_info": {
+          "package_name": "com.pillpal.meditrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqiDI5hSuDevlj6lU_452PMWqbEc_sztw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

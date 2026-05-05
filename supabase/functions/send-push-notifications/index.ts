@@ -107,12 +107,15 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  // Auth: accept service-role JWT or cron secret
+  // Auth: accept service-role JWT, cron secret, or anon key (used by pg_cron)
   const cronSecret = Deno.env.get("CRON_SECRET");
-  const isFromCron = cronSecret && req.headers.get("x-cron-secret") === cronSecret;
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const authHeader = req.headers.get("authorization") ?? "";
-  const isFromAdmin = authHeader === `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
-  if (!isFromCron && !isFromAdmin) {
+  const isFromCron = (cronSecret && req.headers.get("x-cron-secret") === cronSecret)
+    || (anonKey && authHeader === `Bearer ${anonKey}`)
+    || (serviceKey && authHeader === `Bearer ${serviceKey}`);
+  if (!isFromCron) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

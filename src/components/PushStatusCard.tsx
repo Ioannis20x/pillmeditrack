@@ -6,6 +6,7 @@ import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { Capacitor } from '@capacitor/core';
 
 export function PushStatusCard() {
   const { supported, permission, isSubscribed, loading, subscribe, unsubscribe } = usePushNotifications();
@@ -13,15 +14,24 @@ export function PushStatusCard() {
   const [serverCount, setServerCount] = useState<number | null>(null);
   const [checking, setChecking] = useState(false);
   const [sending, setSending] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   const refreshServerStatus = async () => {
     if (!user) return;
     setChecking(true);
-    const { count } = await supabase
-      .from('push_subscriptions')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id);
-    setServerCount(count ?? 0);
+    if (isNative) {
+      const { count } = await supabase
+        .from('device_tokens')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      setServerCount(count ?? 0);
+    } else {
+      const { count } = await supabase
+        .from('push_subscriptions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      setServerCount(count ?? 0);
+    }
     setChecking(false);
   };
 
@@ -35,11 +45,12 @@ export function PushStatusCard() {
       const { data, error } = await supabase.functions.invoke('send-test-push');
       if (error) throw error;
       if (data?.sent > 0) {
-        toast({ title: '✅ Test-Push gesendet', description: `${data.sent} von ${data.total} Geräten erreicht.` });
+        toast({ title: '✅ Test-Push gesendet', description: `${data.sent} Gerät(e) erreicht.` });
       } else {
+        const debugInfo = data?.debug ? JSON.stringify(data.debug) : '';
         toast({
-          title: 'Keine Push gesendet',
-          description: data?.message || `0 von ${data?.total ?? 0} Geräten erreicht. Prüfe Subscription/VAPID.`,
+          title: 'Kein Push gesendet',
+          description: `0 Geräte erreicht. ${debugInfo}`,
           variant: 'destructive',
         });
       }
@@ -92,7 +103,7 @@ export function PushStatusCard() {
         />
         <StatusRow
           ok={(serverCount ?? 0) > 0}
-          label="Server-Subscription (VAPID)"
+          label={isNative ? 'FCM Token (Server)' : 'Server-Subscription (VAPID)'}
           value={checking ? '…' : serverCount === null ? '—' : `${serverCount} Gerät(e)`}
         />
       </div>

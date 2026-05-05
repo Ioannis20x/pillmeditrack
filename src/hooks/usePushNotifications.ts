@@ -86,23 +86,28 @@ export function usePushNotifications() {
       }
       setPermission('granted');
 
-      await PushNotifications.register();
+      // Listeners must be set up BEFORE register() is called
+      const tokenValue = await new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('FCM registration timeout')), 15000);
 
-      await new Promise<void>((resolve, reject) => {
-        PushNotifications.addListener('registration', async (token) => {
-          const platform = Capacitor.getPlatform() as 'ios' | 'android';
-          await supabase.from('device_tokens').upsert(
-            { user_id: user.id, token: token.value, platform },
-            { onConflict: 'user_id,token' }
-          );
-          setIsSubscribed(true);
-          resolve();
+        PushNotifications.addListener('registration', (token) => {
+          clearTimeout(timeout);
+          resolve(token.value);
         });
         PushNotifications.addListener('registrationError', (err) => {
-          console.error('Native push registration error:', err);
+          clearTimeout(timeout);
           reject(err);
         });
+
+        PushNotifications.register().catch(reject);
       });
+
+      const platform = Capacitor.getPlatform() as 'ios' | 'android';
+      await supabase.from('device_tokens').upsert(
+        { user_id: user.id, token: tokenValue, platform },
+        { onConflict: 'user_id,token' }
+      );
+      setIsSubscribed(true);
     } catch (err) {
       console.error('Native subscribe failed:', err);
     } finally {

@@ -14,9 +14,11 @@ import { InteractionWarnings } from '@/components/InteractionWarnings';
 import { PushStatusCard } from '@/components/PushStatusCard';
 import { useNavigate } from 'react-router-dom';
 
+const ADMIN_EMAIL = 'ioannisantoniadis5@gmail.com';
+
 const Index = () => {
   const { medications, loading, addMedication, removeMedication, updateMedication, toggleTaken } = useMedications();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { settings } = useReminderSettings();
   const navigate = useNavigate();
 
@@ -114,7 +116,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-8 md:space-y-12">
-            <PushStatusCard />
+            {user?.email === ADMIN_EMAIL && <PushStatusCard />}
             <InteractionWarnings medications={medications} />
             {(['morning', 'noon', 'evening'] as TimeOfDay[]).map(time => {
               const meds = getMedsForTime(time);

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="512" height="512">
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="28" flood-color="#4A5E4C" flood-opacity="0.22"/>
+    </filter>
+    <clipPath id="clip-left">
+      <rect x="0" y="0" width="512" height="1024"/>
+    </clipPath>
+    <clipPath id="clip-right">
+      <rect x="512" y="0" width="512" height="1024"/>
+    </clipPath>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FAF6F1"/>
+      <stop offset="100%" stop-color="#F0EBE3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square (simulates how it looks on phone) -->
+  <rect width="1024" height="1024" fill="url(#bg-grad)" rx="220"/>
+
+  <!-- Pill shadow layer -->
+  <rect x="262" y="397" width="500" height="230" rx="115"
+        fill="#6B7E6D" opacity="0.18" filter="url(#shadow)"/>
+
+  <!-- Pill left half – sage green -->
+  <rect x="262" y="397" width="500" height="230" rx="115"
+        fill="#7A8E7C" clip-path="url(#clip-left)"/>
+
+  <!-- Pill right half – light sage -->
+  <rect x="262" y="397" width="500" height="230" rx="115"
+        fill="#B2C9B0" clip-path="url(#clip-right)"/>
+
+  <!-- Divider -->
+  <rect x="509" y="397" width="6" height="230" fill="rgba(255,255,255,0.55)"/>
+
+  <!-- Shine left -->
+  <ellipse cx="390" cy="448" rx="72" ry="26" fill="rgba(255,255,255,0.18)"/>
+  <!-- Shine right -->
+  <ellipse cx="630" cy="448" rx="58" ry="22" fill="rgba(255,255,255,0.22)"/>
+</svg>

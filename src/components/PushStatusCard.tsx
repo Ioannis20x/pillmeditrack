@@ -125,15 +125,17 @@ export function PushStatusCard() {
             Aktivieren
           </Button>
         )}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={sendTest}
-          disabled={sending || !isSubscribed || (serverCount ?? 0) === 0}
-        >
-          {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
-          Test-Push senden
-        </Button>
+        {user?.email === 'ioannisantoniadis5@gmail.com' && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={sendTest}
+            disabled={sending || !isSubscribed || (serverCount ?? 0) === 0}
+          >
+            {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+            Test-Push senden
+          </Button>
+        )}
       </div>
 
       {permission === 'denied' && (

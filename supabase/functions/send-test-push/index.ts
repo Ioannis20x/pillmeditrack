@@ -40,8 +40,11 @@ async function getFCMAccessToken(clientEmail: string, privateKey: string): Promi
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
   });
-  const { access_token } = await tokenRes.json();
-  return access_token;
+  const tokenJson = await tokenRes.json();
+  if (!tokenJson.access_token) {
+    throw new Error(`OAuth token exchange failed: ${JSON.stringify(tokenJson)}`);
+  }
+  return tokenJson.access_token;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -89,12 +92,19 @@ Deno.serve(async (req) => {
     });
 
     let sent = 0;
+    const debug: Record<string, unknown> = {
+      fcm_enabled: fcmEnabled,
+      fcm_project_id: fcmProjectId ?? null,
+      fcm_has_email: !!fcmClientEmail,
+      fcm_has_key: !!fcmPrivateKey,
+    };
 
     // ── Web Push ──────────────────────────────────────────────────────────────
     if (vapidPublicKey && vapidPrivateKey) {
       webpush.setVapidDetails("mailto:noreply@meditrack.app", vapidPublicKey, vapidPrivateKey);
       const { data: subs } = await admin
         .from("push_subscriptions").select("*").eq("user_id", userId);
+      debug.web_sub_count = (subs ?? []).length;
       for (const sub of subs ?? []) {
         try {
           await webpush.sendNotification(
@@ -113,15 +123,20 @@ Deno.serve(async (req) => {
     // ── FCM (native) ──────────────────────────────────────────────────────────
     if (fcmEnabled) {
       let fcmToken: string | null = null;
+      let fcmTokenError: string | null = null;
       try {
         fcmToken = await getFCMAccessToken(fcmClientEmail!, fcmPrivateKey!);
-      } catch (e) {
-        console.error("FCM token error:", e);
+      } catch (e: any) {
+        fcmTokenError = e?.message ?? String(e);
+        console.error("FCM access token error:", fcmTokenError);
       }
+      debug.fcm_access_token_ok = !!fcmToken;
+      debug.fcm_access_token_error = fcmTokenError;
 
       if (fcmToken) {
         const { data: deviceTokens } = await admin
           .from("device_tokens").select("*").eq("user_id", userId);
+        debug.device_token_count = (deviceTokens ?? []).length;
         const notifPayload = JSON.parse(payload);
         for (const dt of deviceTokens ?? []) {
           try {
@@ -142,18 +157,25 @@ Deno.serve(async (req) => {
                 }),
               },
             );
-            if (res.status === 200) sent++;
-            else if (res.status === 404 || res.status === 410) {
-              await admin.from("device_tokens").delete().eq("id", dt.id);
+            const resBody = await res.json();
+            console.log(`FCM send status ${res.status}:`, JSON.stringify(resBody));
+            if (res.status === 200) {
+              sent++;
+            } else {
+              debug.fcm_send_error = resBody;
+              if (res.status === 404 || res.status === 410) {
+                await admin.from("device_tokens").delete().eq("id", dt.id);
+              }
             }
-          } catch (err) {
+          } catch (err: any) {
             console.error("FCM send error:", err);
+            debug.fcm_send_exception = err?.message ?? String(err);
           }
         }
       }
     }
 
-    return new Response(JSON.stringify({ sent, vapid_configured: true }), {
+    return new Response(JSON.stringify({ sent, debug }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {

@@ -44,16 +44,21 @@ export function PushStatusCard() {
     try {
       const { data, error } = await supabase.functions.invoke('send-test-push');
       if (error) throw error;
-      if (data?.sent > 0) {
-        toast({ title: '✅ Test-Push gesendet', description: `${data.sent} Gerät(e) erreicht.` });
-      } else {
-        const debugInfo = data?.debug ? JSON.stringify(data.debug) : '';
-        toast({
-          title: 'Kein Push gesendet',
-          description: `0 Geräte erreicht. ${debugInfo}`,
-          variant: 'destructive',
-        });
-      }
+      const d = data?.debug ?? {};
+      const fcmOk = d.fcm_access_token_ok;
+      const fcmErr = d.fcm_access_token_error ?? d.fcm_send_error ?? null;
+      const fcmTokens = d.device_token_count ?? 0;
+      const webSubs = d.web_sub_count ?? 0;
+      const description = [
+        `Web: ${webSubs} Sub(s), FCM: ${fcmTokens} Token(s)`,
+        fcmOk === false ? `FCM Auth: FEHLER – ${JSON.stringify(fcmErr)}` : null,
+        fcmOk === true && fcmTokens > 0 && data?.sent <= webSubs ? `FCM Send: FEHLER – ${JSON.stringify(d.fcm_send_error)}` : null,
+      ].filter(Boolean).join(' | ');
+      toast({
+        title: data?.sent > 0 ? '✅ Test-Push gesendet' : 'Kein Push gesendet',
+        description,
+        variant: data?.sent > 0 ? 'default' : 'destructive',
+      });
       await refreshServerStatus();
     } catch (e: any) {
       toast({ title: 'Fehler', description: e.message ?? 'Unbekannter Fehler', variant: 'destructive' });

@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
-import { lovable } from '@/integrations/lovable';
 import { supabase } from '@/integrations/supabase/client';
 import { Pill, Loader2 } from 'lucide-react';
 
@@ -11,7 +9,6 @@ const DEEP_LINK_SCHEME = 'com.pillpal.meditrack://auth/callback';
 const Auth = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const handleOAuth = async (provider: 'google' | 'apple') => {
     setLoading(provider);
@@ -31,15 +28,14 @@ const Auth = () => {
           await Browser.open({ url: data.url });
         }
       } else {
-        // Web: use Lovable auth
-        const result = await lovable.auth.signInWithOAuth(provider, {
-          redirect_uri: window.location.origin,
+        // Web: use Supabase directly
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: window.location.origin,
+          },
         });
-        if (result.error) {
-          setError(result.error.message || 'Anmeldung fehlgeschlagen');
-        } else if (!result.redirected) {
-          navigate('/');
-        }
+        if (oauthError) throw oauthError;
       }
     } catch (e: any) {
       setError(e.message || 'Anmeldung fehlgeschlagen');

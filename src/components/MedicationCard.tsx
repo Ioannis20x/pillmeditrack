@@ -1,6 +1,7 @@
 import { Medication, TimeOfDay, TIME_OF_DAY_CONFIG } from '@/types/medication';
 import { PillVisualizer } from './PillVisualizer';
 import { EditMedicationDialog } from './EditMedicationDialog';
+import { DrugInfoDialog } from './DrugInfoDialog';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Check, Trash2, StickyNote } from 'lucide-react';
@@ -47,6 +48,7 @@ export function MedicationCard({ medication, timeOfDay, onToggleTaken, onRemove,
         </div>
         <div className="flex items-center gap-1 md:gap-2 shrink-0">
           <EditMedicationDialog medication={medication} onUpdate={onUpdate} />
+          <DrugInfoDialog name={medication.name} activeIngredient={medication.activeIngredient} />
           <Button
             variant="ghost"
             size="icon"

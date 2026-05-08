@@ -439,4 +439,170 @@ export const GERMAN_MEDICATIONS: GermanDrug[] = [
   { brand_name: "MST Mundipharma", generic_name: "Morphin", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
   { brand_name: "Durogesic", generic_name: "Fentanyl", dosage_form: "Pflaster", route: "Transdermal", category: "Schmerzmittel" },
   { brand_name: "Codein-ratiopharm", generic_name: "Codein", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+
+  // Weitere OTC Schmerzbehandlung
+  { brand_name: "Aspirin 500", generic_name: "Acetylsalicylsäure", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Ibuflam", generic_name: "Ibuprofen", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Paracetamol", generic_name: "Paracetamol", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Dolo Dobendan", generic_name: "Ibuprofen / Chlorhexidin", dosage_form: "Lozenge", route: "Oral", category: "Schmerzmittel" },
+
+  // Weitere Erkältungsmittel
+  { brand_name: "Dextromethorphan-ratiopharm", generic_name: "Dextromethorphan", dosage_form: "Sirup", route: "Oral", category: "Erkältung" },
+  { brand_name: "Ambroxol-Hexal", generic_name: "Ambroxol", dosage_form: "Sirup", route: "Oral", category: "Erkältung" },
+
+  // Magnesium und weitere Supplemente
+  { brand_name: "Magnesium AL", generic_name: "Magnesium", dosage_form: "Tablette", route: "Oral", category: "Mineral" },
+  { brand_name: "Magnesium-Verla", generic_name: "Magnesium Citrat", dosage_form: "Pulver", route: "Oral", category: "Mineral" },
+  { brand_name: "Zink-ratiopharm", generic_name: "Zink", dosage_form: "Tablette", route: "Oral", category: "Mineral" },
+  { brand_name: "Eisen AL", generic_name: "Eisen", dosage_form: "Kapsel", route: "Oral", category: "Mineral" },
+
+  // Weitere HNO-Medikamente
+  { brand_name: "Eludril", generic_name: "Chlorhexidin / Chlorobutanol", dosage_form: "Lösung", route: "Topisch", category: "HNO" },
+  { brand_name: "Chlorhexamed", generic_name: "Chlorhexidin", dosage_form: "Lösung", route: "Topisch", category: "HNO" },
+
+  // Weitere Antihistaminika
+  { brand_name: "Cetirizin STADA", generic_name: "Cetirizin", dosage_form: "Tablette", route: "Oral", category: "Allergie" },
+  { brand_name: "Terfenadine-ratiopharm", generic_name: "Terfenadin", dosage_form: "Tablette", route: "Oral", category: "Allergie" },
+  { brand_name: "Zyrtec", generic_name: "Cetirizin", dosage_form: "Tablette", route: "Oral", category: "Allergie" },
+
+  // Weitere Blutdrucksenker
+  { brand_name: "Atenolol-ratiopharm", generic_name: "Atenolol", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Atenolol AL", generic_name: "Atenolol", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Lisinopril-ratiopharm", generic_name: "Lisinopril", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Lisinopril AL", generic_name: "Lisinopril", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Losartan-ratiopharm", generic_name: "Losartan", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Aprovel", generic_name: "Irbesartan", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Mikardis", generic_name: "Telmisartan", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Olmetec", generic_name: "Olmesartan", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Arcoxia", generic_name: "Etoricoxib", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+
+  // Weitere Antikoagulanzien
+  { brand_name: "Warfarin-ratiopharm", generic_name: "Warfarin", dosage_form: "Tablette", route: "Oral", category: "Blutverdünner" },
+  { brand_name: "Heparin Hexal", generic_name: "Heparin", dosage_form: "Injektionslösung", route: "Subkutan", category: "Blutverdünner" },
+  { brand_name: "Fragmin", generic_name: "Dalteparin", dosage_form: "Injektionslösung", route: "Subkutan", category: "Blutverdünner" },
+
+  // Magenschutz kombiniert
+  { brand_name: "Nexium Control", generic_name: "Esomeprazol", dosage_form: "Kapsel", route: "Oral", category: "Magen" },
+  { brand_name: "Gaviscon", generic_name: "Natriumalginat", dosage_form: "Suspension", route: "Oral", category: "Magen" },
+
+  // Weitere Antibiotika
+  { brand_name: "Penicillin V-ratiopharm", generic_name: "Penicillin V", dosage_form: "Tablette", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Ampicillin-ratiopharm", generic_name: "Ampicillin", dosage_form: "Kapsel", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Tetracyclin-ratiopharm", generic_name: "Tetracyclin", dosage_form: "Kapsel", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Minocyclin-ratiopharm", generic_name: "Minocyclin", dosage_form: "Kapsel", route: "Oral", category: "Antibiotikum" },
+  { brand_name: "Vancomycin-ratiopharm", generic_name: "Vancomycin", dosage_form: "Kapsel", route: "Oral", category: "Antibiotikum" },
+
+  // Weitere Schlafmittel / Beruhigung
+  { brand_name: "Melatonin-ratiopharm", generic_name: "Melatonin", dosage_form: "Tablette", route: "Oral", category: "Schlafmittel" },
+  { brand_name: "Diphenhydramin-ratiopharm", generic_name: "Diphenhydramin", dosage_form: "Tablette", route: "Oral", category: "Schlafmittel" },
+  { brand_name: "Doxylamin-ratiopharm", generic_name: "Doxylamin", dosage_form: "Tablette", route: "Oral", category: "Schlafmittel" },
+
+  // Weitere Psychopharmaka
+  { brand_name: "Fluoxetin-ratiopharm", generic_name: "Fluoxetin", dosage_form: "Kapsel", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Fluoxetin AL", generic_name: "Fluoxetin", dosage_form: "Kapsel", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Paroxetin-ratiopharm", generic_name: "Paroxetin", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Fluvoxamin-ratiopharm", generic_name: "Fluvoxamin", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Trazodon-ratiopharm", generic_name: "Trazodon", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+  { brand_name: "Bupropion-ratiopharm", generic_name: "Bupropion", dosage_form: "Tablette", route: "Oral", category: "Antidepressivum" },
+
+  // Weitere Angststörungen
+  { brand_name: "Buspiron-ratiopharm", generic_name: "Buspiron", dosage_form: "Tablette", route: "Oral", category: "Angststörung" },
+  { brand_name: "Alprazolam-ratiopharm", generic_name: "Alprazolam", dosage_form: "Tablette", route: "Oral", category: "Angststörung" },
+  { brand_name: "Triazolam-ratiopharm", generic_name: "Triazolam", dosage_form: "Tablette", route: "Oral", category: "Angststörung" },
+
+  // Weitere Diabetes-Medikamente
+  { brand_name: "Glibenclamid-ratiopharm", generic_name: "Glibenclamid", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Repaglinid-ratiopharm", generic_name: "Repaglinid", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Pioglitazon-ratiopharm", generic_name: "Pioglitazon", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Actos", generic_name: "Pioglitazon", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Vildagliptin-ratiopharm", generic_name: "Vildagliptin", dosage_form: "Tablette", route: "Oral", category: "Diabetes" },
+  { brand_name: "Victoza", generic_name: "Liraglutid", dosage_form: "Injektionslösung", route: "Subkutan", category: "Diabetes" },
+  { brand_name: "Exenatid-ratiopharm", generic_name: "Exenatid", dosage_form: "Injektionslösung", route: "Subkutan", category: "Diabetes" },
+
+  // Weitere Nierenschutz
+  { brand_name: "Amlodepin-Valsartan-ratiopharm", generic_name: "Amlodipin / Valsartan", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+  { brand_name: "Ramipril-Amlodipin-ratiopharm", generic_name: "Ramipril / Amlodipin", dosage_form: "Tablette", route: "Oral", category: "Blutdruck" },
+
+  // Weitere Antiallergika
+  { brand_name: "Pollen-Tablette", generic_name: "Pollenvakzine", dosage_form: "Tablette", route: "Sublingual", category: "Allergie" },
+  { brand_name: "Desensibilisierung", generic_name: "Allergen-Extrakt", dosage_form: "Injektionslösung", route: "Subkutan", category: "Allergie" },
+
+  // Weitere Osteoporose-Medikamente
+  { brand_name: "Risendronat-ratiopharm", generic_name: "Risendronat", dosage_form: "Tablette", route: "Oral", category: "Osteoporose" },
+  { brand_name: "Ibandronsäure-ratiopharm", generic_name: "Ibandronsäure", dosage_form: "Injektionslösung", route: "Intravenös", category: "Osteoporose" },
+  { brand_name: "Teriparatid", generic_name: "Teriparatid", dosage_form: "Injektionslösung", route: "Subkutan", category: "Osteoporose" },
+  { brand_name: "Vitamin D3 AL", generic_name: "Cholecalciferol", dosage_form: "Kapsel", route: "Oral", category: "Mineral" },
+
+  // Weitere Magenschutzmittel
+  { brand_name: "Sucralfat", generic_name: "Sucralfat", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+  { brand_name: "Ranitidin-ratiopharm", generic_name: "Ranitidin", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+  { brand_name: "Cimetidin-ratiopharm", generic_name: "Cimetidin", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+  { brand_name: "Famotidin-ratiopharm", generic_name: "Famotidin", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+
+  // Weitere Atemwegsmedikamente
+  { brand_name: "Formoterol-ratiopharm", generic_name: "Formoterol", dosage_form: "Inhalation", route: "Inhalativ", category: "Atemwege" },
+  { brand_name: "Theophyllin Retard-ratiopharm", generic_name: "Theophyllin", dosage_form: "Tablette", route: "Oral", category: "Atemwege" },
+  { brand_name: "Cromoglycinsäure", generic_name: "Cromoglycinsäure", dosage_form: "Spray", route: "Inhalativ", category: "Atemwege" },
+
+  // Weitere Kardiaka
+  { brand_name: "Ranolazin-ratiopharm", generic_name: "Ranolazin", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Ivabridin-ratiopharm", generic_name: "Ivabridin", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+  { brand_name: "Nitroglycerin-Spray", generic_name: "Nitroglycerin", dosage_form: "Spray", route: "Sublingual", category: "Herz" },
+  { brand_name: "Nitrolingua", generic_name: "Nitroglycerin", dosage_form: "Tablette", route: "Sublingual", category: "Herz" },
+  { brand_name: "Isosorbid-ratiopharm", generic_name: "Isosorbid-5-mononitrat", dosage_form: "Tablette", route: "Oral", category: "Herz" },
+
+  // Weitere Entzündungshemmer
+  { brand_name: "Indometacin-ratiopharm", generic_name: "Indometacin", dosage_form: "Kapsel", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Piroxicam-ratiopharm", generic_name: "Piroxicam", dosage_form: "Kapsel", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Meloxicam-ratiopharm", generic_name: "Meloxicam", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+  { brand_name: "Tenoxicam-ratiopharm", generic_name: "Tenoxicam", dosage_form: "Tablette", route: "Oral", category: "Schmerzmittel" },
+
+  // Weitere Antiemetika
+  { brand_name: "Ondansetron-ratiopharm", generic_name: "Ondansetron", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+  { brand_name: "Zofran", generic_name: "Ondansetron", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+  { brand_name: "Granisetron-ratiopharm", generic_name: "Granisetron", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+  { brand_name: "Alizaprid-ratiopharm", generic_name: "Alizaprid", dosage_form: "Tablette", route: "Oral", category: "Magen" },
+
+  // Weitere Probiotika
+  { brand_name: "Omnibiotic", generic_name: "Probiotika", dosage_form: "Pulver", route: "Oral", category: "Magen" },
+  { brand_name: "Mutaflor", generic_name: "E. coli Stamm", dosage_form: "Kapsel", route: "Oral", category: "Magen" },
+  { brand_name: "Symbioflor", generic_name: "Probiotika", dosage_form: "Tropfen", route: "Oral", category: "Magen" },
+
+  // Weitere Schilddrüsenmedikamente
+  { brand_name: "PTU", generic_name: "Propylthiouracil", dosage_form: "Tablette", route: "Oral", category: "Schilddrüse" },
+  { brand_name: "Methimazol-ratiopharm", generic_name: "Methimazol", dosage_form: "Tablette", route: "Oral", category: "Schilddrüse" },
+
+  // Weitere Harnsäuresenker
+  { brand_name: "Benzbromarone-ratiopharm", generic_name: "Benzbromarone", dosage_form: "Tablette", route: "Oral", category: "Gicht" },
+  { brand_name: "Probenecid", generic_name: "Probenecid", dosage_form: "Tablette", route: "Oral", category: "Gicht" },
+
+  // Weitere Eisenpräparate
+  { brand_name: "Ferro sanol duodenal", generic_name: "Eisen", dosage_form: "Kapsel", route: "Oral", category: "Mineral" },
+  { brand_name: "Floradix", generic_name: "Eisen-Kräuter", dosage_form: "Sirup", route: "Oral", category: "Mineral" },
+
+  // Weitere Antikoagulanzien
+  { brand_name: "Fondaparinux", generic_name: "Fondaparinux", dosage_form: "Injektionslösung", route: "Subkutan", category: "Blutverdünner" },
+  { brand_name: "Argatroban", generic_name: "Argatroban", dosage_form: "Infusionslösung", route: "Intravenös", category: "Blutverdünner" },
+
+  // Weitere antivirale
+  { brand_name: "Aciclovir-ratiopharm", generic_name: "Aciclovir", dosage_form: "Tablette", route: "Oral", category: "Antiviral" },
+  { brand_name: "Valaciclovir-ratiopharm", generic_name: "Valaciclovir", dosage_form: "Tablette", route: "Oral", category: "Antiviral" },
+  { brand_name: "Famciclovir-ratiopharm", generic_name: "Famciclovir", dosage_form: "Tablette", route: "Oral", category: "Antiviral" },
+  { brand_name: "Oseltamivir-ratiopharm", generic_name: "Oseltamivir", dosage_form: "Kapsel", route: "Oral", category: "Antiviral" },
+  { brand_name: "Zanamivir", generic_name: "Zanamivir", dosage_form: "Pulver", route: "Inhalativ", category: "Antiviral" },
+
+  // Weitere Broncholytika
+  { brand_name: "Salbuphen", generic_name: "Salbutamol", dosage_form: "Inhalation", route: "Inhalativ", category: "Atemwege" },
+  { brand_name: "Ributrex", generic_name: "Salbutamol", dosage_form: "Inhalation", route: "Inhalativ", category: "Atemwege" },
+
+  // Weitere Corticosteroide
+  { brand_name: "Hydrocortison-ratiopharm", generic_name: "Hydrocortison", dosage_form: "Creme", route: "Topisch", category: "Kortison" },
+  { brand_name: "Fluticason-ratiopharm", generic_name: "Fluticason", dosage_form: "Creme", route: "Topisch", category: "Kortison" },
+  { brand_name: "Dexamethason-ratiopharm", generic_name: "Dexamethason", dosage_form: "Tablette", route: "Oral", category: "Kortison" },
+  { brand_name: "Betamethason-ratiopharm", generic_name: "Betamethason", dosage_form: "Creme", route: "Topisch", category: "Kortison" },
+
+  // Weitere Hautmedikamente
+  { brand_name: "Terbinafin-ratiopharm", generic_name: "Terbinafin", dosage_form: "Creme", route: "Topisch", category: "Haut" },
+  { brand_name: "Miconazol-ratiopharm", generic_name: "Miconazol", dosage_form: "Creme", route: "Topisch", category: "Haut" },
+  { brand_name: "Ketoconazol-ratiopharm", generic_name: "Ketoconazol", dosage_form: "Creme", route: "Topisch", category: "Haut" },
 ];

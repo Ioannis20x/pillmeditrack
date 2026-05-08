@@ -1,16 +1,15 @@
 import { useState, useCallback, useMemo } from 'react';
-import { GERMAN_MEDICATIONS, GermanDrug } from '@/data/germanMedications';
+import { GERMAN_MEDICATIONS } from '@/data/germanMedications';
 
 interface DrugResult {
   brand_name: string;
   generic_name: string;
   dosage_form: string;
   route: string;
-  source: 'de' | 'fda';
+  source: 'de' | 'fda' | 'rxnorm';
   category?: string;
 }
 
-// Extract unique categories
 export function getGermanCategories(): string[] {
   const cats = new Set<string>();
   GERMAN_MEDICATIONS.forEach(d => { if (d.category) cats.add(d.category); });
@@ -28,8 +27,68 @@ function searchGermanDB(query: string, category?: string): DrugResult[] {
         (d.category?.toLowerCase().includes(q));
       return matchesCategory && matchesQuery;
     })
-    .slice(0, 20)
+    .slice(0, 30)
     .map(d => ({ ...d, source: 'de' as const }));
+}
+
+// OpenFDA Label endpoint: hundreds of thousands of drugs worldwide
+async function searchOpenFDALabel(query: string): Promise<DrugResult[]> {
+  const q = query.trim();
+  if (q.length < 2) return [];
+  // Search both brand_name and generic_name with wildcard
+  const search = `(openfda.brand_name:${q}* OR openfda.generic_name:${q}*)`;
+  const url = `https://api.fda.gov/drug/label.json?search=${encodeURIComponent(search)}&limit=25`;
+  const res = await fetch(url);
+  if (!res.ok) return [];
+  const data = await res.json();
+  const seen = new Set<string>();
+  const results: DrugResult[] = [];
+  for (const r of data.results || []) {
+    const brand = r.openfda?.brand_name?.[0] || r.openfda?.generic_name?.[0] || '';
+    if (!brand) continue;
+    const key = brand.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    results.push({
+      brand_name: brand,
+      generic_name: r.openfda?.generic_name?.[0] || '',
+      dosage_form: r.openfda?.dosage_form?.[0] || '',
+      route: r.openfda?.route?.[0] || '',
+      source: 'fda',
+    });
+  }
+  return results;
+}
+
+// RxNorm: comprehensive US drug naming database (free, no key)
+async function searchRxNorm(query: string): Promise<DrugResult[]> {
+  const q = query.trim();
+  if (q.length < 2) return [];
+  const url = `https://rxnav.nlm.nih.gov/REST/drugs.json?name=${encodeURIComponent(q)}`;
+  const res = await fetch(url);
+  if (!res.ok) return [];
+  const data = await res.json();
+  const groups = data.drugGroup?.conceptGroup || [];
+  const seen = new Set<string>();
+  const results: DrugResult[] = [];
+  for (const g of groups) {
+    for (const c of g.conceptProperties || []) {
+      const name = c.name as string;
+      if (!name) continue;
+      const key = name.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      results.push({
+        brand_name: name,
+        generic_name: c.synonym || '',
+        dosage_form: g.tty || '',
+        route: '',
+        source: 'rxnorm',
+      });
+      if (results.length >= 25) return results;
+    }
+  }
+  return results;
 }
 
 export function useOpenFDA() {
@@ -39,52 +98,32 @@ export function useOpenFDA() {
   const categories = useMemo(() => getGermanCategories(), []);
 
   const searchDrugs = useCallback(async (query: string, category?: string) => {
-    // If category is set, show filtered results even without query
-    if (!query && !category) {
-      setResults([]);
-      return;
-    }
+    if (!query && !category) { setResults([]); return; }
     if (category && (!query || query.length < 2)) {
       setResults(searchGermanDB('', category));
       return;
     }
-    if (!query || query.length < 2) {
-      setResults([]);
-      return;
-    }
+    if (!query || query.length < 2) { setResults([]); return; }
 
-    // Search German DB instantly
     const germanResults = searchGermanDB(query, category);
     setResults(germanResults);
 
-    // Also search OpenFDA in background
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://api.fda.gov/drug/drugsfda.json?search=openfda.brand_name:"${encodeURIComponent(query)}"&limit=10`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        const fdaDrugs: DrugResult[] = (data.results || [])
-          .map((r: any) => ({
-            brand_name: r.openfda?.brand_name?.[0] || r.products?.[0]?.brand_name || 'Unknown',
-            generic_name: r.openfda?.generic_name?.[0] || '',
-            dosage_form: r.products?.[0]?.dosage_form || r.openfda?.dosage_form?.[0] || '',
-            route: r.openfda?.route?.[0] || r.products?.[0]?.route || '',
-            source: 'fda' as const,
-          }))
-          .filter((d: DrugResult, i: number, arr: DrugResult[]) =>
-            arr.findIndex(x => x.brand_name === d.brand_name) === i
-          );
+      const [fda, rx] = await Promise.allSettled([
+        searchOpenFDALabel(query),
+        searchRxNorm(query),
+      ]);
+      const fdaResults = fda.status === 'fulfilled' ? fda.value : [];
+      const rxResults = rx.status === 'fulfilled' ? rx.value : [];
 
-        // Merge: German first, then FDA (skip duplicates)
-        const germanNames = new Set(germanResults.map(d => d.brand_name.toLowerCase()));
-        const merged = [
-          ...germanResults,
-          ...fdaDrugs.filter(d => !germanNames.has(d.brand_name.toLowerCase())),
-        ];
-        setResults(merged);
+      const seen = new Set(germanResults.map(d => d.brand_name.toLowerCase()));
+      const merged: DrugResult[] = [...germanResults];
+      for (const d of [...fdaResults, ...rxResults]) {
+        const key = d.brand_name.toLowerCase();
+        if (!seen.has(key)) { seen.add(key); merged.push(d); }
       }
+      setResults(merged);
     } catch {
       setResults([]);
     } finally {
@@ -93,4 +132,40 @@ export function useOpenFDA() {
   }, []);
 
   return { results, loading, searchDrugs, categories };
+}
+
+// === Side effects / drug info ===
+export interface DrugInfo {
+  brand_name?: string;
+  generic_name?: string;
+  adverse_reactions?: string;
+  warnings?: string;
+  contraindications?: string;
+  dosage_and_administration?: string;
+  indications_and_usage?: string;
+}
+
+export async function fetchDrugInfo(name: string): Promise<DrugInfo | null> {
+  const q = name.trim();
+  if (!q) return null;
+  const search = `(openfda.brand_name:"${q}" OR openfda.generic_name:"${q}" OR openfda.brand_name:${q}* OR openfda.generic_name:${q}*)`;
+  const url = `https://api.fda.gov/drug/label.json?search=${encodeURIComponent(search)}&limit=1`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const r = data.results?.[0];
+    if (!r) return null;
+    return {
+      brand_name: r.openfda?.brand_name?.[0],
+      generic_name: r.openfda?.generic_name?.[0],
+      adverse_reactions: r.adverse_reactions?.[0],
+      warnings: r.warnings?.[0] || r.warnings_and_cautions?.[0],
+      contraindications: r.contraindications?.[0],
+      dosage_and_administration: r.dosage_and_administration?.[0],
+      indications_and_usage: r.indications_and_usage?.[0],
+    };
+  } catch {
+    return null;
+  }
 }

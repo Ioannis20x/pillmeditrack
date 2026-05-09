@@ -4,7 +4,7 @@ import { Browser } from '@capacitor/browser';
 import { supabase } from '@/integrations/supabase/client';
 import { Pill, Loader2 } from 'lucide-react';
 
-const DEEP_LINK_SCHEME = 'com.pillpal.meditrack://auth/callback';
+const DEEP_LINK_SCHEME = 'com.ioannisdev.meditrack://auth/callback';
 
 const Auth = () => {
   const [loading, setLoading] = useState<string | null>(null);

@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.pillpal.meditrack',
+  appId: 'com.ioannisdev.meditrack',
   appName: 'MediTrack',
   webDir: 'dist',
   server: {

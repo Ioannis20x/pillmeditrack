@@ -25,6 +25,8 @@ const Auth = () => {
         });
         if (oauthError) throw oauthError;
         if (data?.url) {
+          console.log('[Auth] Native OAuth URL:', data.url);
+          console.log('[Auth] redirectTo:', DEEP_LINK_SCHEME);
           await Browser.open({ url: data.url });
         }
       } else {

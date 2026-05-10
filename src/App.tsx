@@ -44,7 +44,7 @@ function DeepLinkHandler() {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const listener = CapApp.addListener('appUrlOpen', async ({ url }) => {
-      if (!url.startsWith('com.pillpal.meditrack://')) return;
+      if (!url.startsWith('com.ioannisdev.meditrack://')) return;
       try {
         const parsed = new URL(url);
 

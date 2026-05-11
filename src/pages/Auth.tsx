@@ -9,13 +9,13 @@ const DEEP_LINK_SCHEME = 'com.ioannisdev.meditrack://auth/callback';
 const Auth = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const isNative = Capacitor.isNativePlatform();
 
   const handleOAuth = async (provider: 'google' | 'apple') => {
     setLoading(provider);
     setError(null);
     try {
-      if (Capacitor.isNativePlatform()) {
-        // Native: use Supabase directly with deep link redirect
+      if (isNative) {
         const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
@@ -25,12 +25,9 @@ const Auth = () => {
         });
         if (oauthError) throw oauthError;
         if (data?.url) {
-          console.log('[Auth] Native OAuth URL:', data.url);
-          console.log('[Auth] redirectTo:', DEEP_LINK_SCHEME);
           await Browser.open({ url: data.url });
         }
       } else {
-        // Web: use Supabase directly
         const { error: oauthError } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
@@ -86,7 +83,7 @@ const Auth = () => {
           </div>
         )}
 
-        <p className="text-center text-xs text-muted-foreground mt-8">
+<p className="text-center text-xs text-muted-foreground mt-8">
           Mit der Anmeldung akzeptierst du unsere Nutzungsbedingungen.
         </p>
       </div>

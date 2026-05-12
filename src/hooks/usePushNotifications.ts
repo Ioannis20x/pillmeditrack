@@ -56,8 +56,8 @@ export function usePushNotifications() {
       .from('device_tokens')
       .select('id')
       .eq('user_id', user.id)
-      .maybeSingle()
-      .then(({ data }) => setIsSubscribed(!!data));
+      .limit(1)
+      .then(({ data }) => setIsSubscribed((data ?? []).length > 0));
   }, [isNative, user]);
 
   // Check existing web subscription
@@ -113,6 +113,8 @@ export function usePushNotifications() {
 
       const platform = Capacitor.getPlatform() as 'ios' | 'android';
       console.log('[Push] upserting token for user', user.id, 'platform', platform);
+      // Remove stale tokens for this user before saving the new one
+      await supabase.from('device_tokens').delete().eq('user_id', user.id).neq('token', tokenValue);
       const { error: upsertError } = await supabase.from('device_tokens').upsert(
         { user_id: user.id, token: tokenValue, platform },
         { onConflict: 'user_id,token' }

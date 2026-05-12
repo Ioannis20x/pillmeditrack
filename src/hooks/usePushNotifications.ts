@@ -77,39 +77,54 @@ export function usePushNotifications() {
     setLoading(true);
     try {
       let permResult = await PushNotifications.checkPermissions();
+      console.log('[Push] permission state:', permResult.receive);
       if (permResult.receive === 'prompt') {
         permResult = await PushNotifications.requestPermissions();
+        console.log('[Push] after request:', permResult.receive);
       }
       if (permResult.receive !== 'granted') {
         setPermission('denied');
+        console.warn('[Push] permission denied');
         return;
       }
       setPermission('granted');
 
+      // Remove stale listeners before re-registering
+      await PushNotifications.removeAllListeners();
+
       // Listeners must be set up BEFORE register() is called
       const tokenValue = await new Promise<string>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('FCM registration timeout')), 15000);
+        const timeout = setTimeout(() => reject(new Error('FCM registration timeout after 15s')), 15000);
 
         PushNotifications.addListener('registration', (token) => {
           clearTimeout(timeout);
+          console.log('[Push] FCM token received:', token.value.substring(0, 20) + '...');
           resolve(token.value);
         });
         PushNotifications.addListener('registrationError', (err) => {
           clearTimeout(timeout);
-          reject(err);
+          console.error('[Push] FCM registration error:', JSON.stringify(err));
+          reject(new Error(JSON.stringify(err)));
         });
 
+        console.log('[Push] calling PushNotifications.register()...');
         PushNotifications.register().catch(reject);
       });
 
       const platform = Capacitor.getPlatform() as 'ios' | 'android';
-      await supabase.from('device_tokens').upsert(
+      console.log('[Push] upserting token for user', user.id, 'platform', platform);
+      const { error: upsertError } = await supabase.from('device_tokens').upsert(
         { user_id: user.id, token: tokenValue, platform },
         { onConflict: 'user_id,token' }
       );
+      if (upsertError) {
+        console.error('[Push] upsert failed:', upsertError.message, upsertError.code, upsertError.details);
+        throw upsertError;
+      }
+      console.log('[Push] token saved to DB successfully');
       setIsSubscribed(true);
     } catch (err) {
-      console.error('Native subscribe failed:', err);
+      console.error('[Push] Native subscribe failed:', err);
     } finally {
       setLoading(false);
     }

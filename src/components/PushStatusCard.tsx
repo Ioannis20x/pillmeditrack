@@ -44,6 +44,7 @@ export function PushStatusCard() {
     try {
       const { data, error } = await supabase.functions.invoke('send-test-push');
       if (error) throw error;
+      console.log('[TestPush] response:', JSON.stringify(data));
       const d = data?.debug ?? {};
       const fcmOk = d.fcm_access_token_ok;
       const fcmErr = d.fcm_access_token_error ?? d.fcm_send_error ?? null;

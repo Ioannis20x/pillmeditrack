@@ -184,6 +184,18 @@ export const GERMAN_MEDICATIONS: GermanDrug[] = [
   { brand_name: "Alendronsäure AL", generic_name: "Alendronsäure", dosage_form: "Tablette", route: "Oral", category: "Osteoporose" },
   { brand_name: "Fosamax", generic_name: "Alendronsäure", dosage_form: "Tablette", route: "Oral", category: "Osteoporose" },
 
+  // Hormone / Wechseljahre (HRT)
+  { brand_name: "Gynokadin Dosiergel", generic_name: "Estradiol", dosage_form: "Gel", route: "Transdermal", category: "Hormone" },
+  { brand_name: "Gynokadin", generic_name: "Estradiol", dosage_form: "Tablette", route: "Oral", category: "Hormone" },
+  { brand_name: "Estradot", generic_name: "Estradiol", dosage_form: "Pflaster", route: "Transdermal", category: "Hormone" },
+  { brand_name: "Estreva", generic_name: "Estradiol", dosage_form: "Gel", route: "Transdermal", category: "Hormone" },
+  { brand_name: "Climara", generic_name: "Estradiol", dosage_form: "Pflaster", route: "Transdermal", category: "Hormone" },
+  { brand_name: "Utrogest", generic_name: "Progesteron", dosage_form: "Kapsel", route: "Oral / Vaginal", category: "Hormone" },
+  { brand_name: "Crinone", generic_name: "Progesteron", dosage_form: "Gel", route: "Vaginal", category: "Hormone" },
+  { brand_name: "Angeliq", generic_name: "Estradiol / Drospirenon", dosage_form: "Tablette", route: "Oral", category: "Hormone" },
+  { brand_name: "Femoston", generic_name: "Estradiol / Didrogesteron", dosage_form: "Tablette", route: "Oral", category: "Hormone" },
+  { brand_name: "Kliogest", generic_name: "Estradiol / Norethisteron", dosage_form: "Tablette", route: "Oral", category: "Hormone" },
+
   // Kontrazeption
   { brand_name: "Maxim", generic_name: "Dienogest / Ethinylestradiol", dosage_form: "Tablette", route: "Oral", category: "Verhütung" },
   { brand_name: "Lamuna", generic_name: "Desogestrel / Ethinylestradiol", dosage_form: "Tablette", route: "Oral", category: "Verhütung" },
